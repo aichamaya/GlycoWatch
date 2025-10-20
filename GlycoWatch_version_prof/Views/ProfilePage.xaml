@@ -1,0 +1,24 @@
+﻿<Page x:Class="GlycoWatch_version_prof.Views.ProfilePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Profil">
+    <StackPanel Margin="16">
+        <StackPanel Orientation="Horizontal">
+            <Button Content="← Retour" Click="Back_Click"/>
+            <TextBlock Text="Mon profil" FontSize="24" FontWeight="Bold" Margin="12,0,0,0"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+            <TextBlock Text="Cible min (mmol/L)" Width="160"/>
+            <TextBox x:Name="TxtMin" Width="100"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+            <TextBlock Text="Cible max (mmol/L)" Width="160"/>
+            <TextBox x:Name="TxtMax" Width="100"/>
+        </StackPanel>
+
+        <Button Content="Enregistrer" Margin="0,16,0,0" Click="Save_Click"/>
+        <TextBlock x:Name="LblInfo"/>
+    </StackPanel>
+</Page>

@@ -1,14 +1,15 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using GlycoWatch_version_prof.Models;
+using GlycoWatch_version_prof.Repositories;
 
 namespace GlycoWatch_version_prof
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-    }
+        public static AuthRepository Auth { get; } = new AuthRepository();
+        public static ProfileRepository Profiles { get; } = new ProfileRepository();
+        public static MeasureRepository Measures { get; } = new MeasureRepository();
 
+        public static UserDb? CurrentUser { get; set; }   // ← remplace PatientCourant
+    }
 }
