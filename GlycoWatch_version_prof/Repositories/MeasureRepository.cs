@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using MySql.Data.MySqlClient;
-using GlycoWatch_version_prof.Data;
+﻿using GlycoWatch_version_prof.Data;
 using GlycoWatch_version_prof.Models;
+using MySql.Data.MySqlClient;
 
 namespace GlycoWatch_version_prof.Repositories
 {
+    /// <summary>
+    /// Accès BD pour la table 'mesures'
+    /// Colonnes: Id, DateMesure, Glycemie, ContexteRepas, Activite, UserId
+    /// </summary>
     public class MeasureRepository
     {
+        // AJOUT
         public void Add(MeasureDb m)
         {
             using var cn = Db.GetConnection();
             using var cmd = new MySqlCommand(@"
-INSERT INTO mesures (DateMesure, Glycemie, ContexteRepas, Activite, UserId)
-VALUES (@d, @g, @r, @a, @u)", cn);
+         INSERT INTO mesures (DateMesure, Glycemie, ContexteRepas, Activite, UserId)
+         VALUES (@d, @g, @r, @a, @u)", cn);
             cmd.Parameters.AddWithValue("@d", m.DateMesure);
             cmd.Parameters.AddWithValue("@g", m.Glycemie);
             cmd.Parameters.AddWithValue("@r", string.IsNullOrWhiteSpace(m.ContexteRepas) ? (object)DBNull.Value : m.ContexteRepas);
@@ -22,16 +25,20 @@ VALUES (@d, @g, @r, @a, @u)", cn);
             cmd.ExecuteNonQuery();
         }
 
+        // LECTURE TOUTES LES MESURES D'UN USER
         public IEnumerable<MeasureDb> GetByUser(int userId)
         {
             using var cn = Db.GetConnection();
-            using var cmd = new MySqlCommand("SELECT * FROM mesures WHERE UserId=@u ORDER BY DateMesure DESC", cn);
+            using var cmd = new MySqlCommand(
+                "SELECT * FROM mesures WHERE UserId=@u ORDER BY DateMesure DESC", cn);
             cmd.Parameters.AddWithValue("@u", userId);
             using var rd = cmd.ExecuteReader();
             while (rd.Read()) yield return Map(rd);
         }
 
-        public IEnumerable<MeasureDb> Filter(int userId, DateTime? from, DateTime? to, string? repasContains, string? activiteContains)
+        // FILTRE : par date (from/to), et textes partiels (repas, activité)
+        public IEnumerable<MeasureDb> Filter(int userId, DateTime? from, DateTime? to,
+                                             string? repasContains, string? activiteContains)
         {
             using var cn = Db.GetConnection();
             var where = "WHERE UserId=@u";
@@ -51,13 +58,15 @@ VALUES (@d, @g, @r, @a, @u)", cn);
             using var rd = cmd.ExecuteReader();
             while (rd.Read()) yield return Map(rd);
         }
+
+        // MISE À JOUR
         public void Update(MeasureDb m)
         {
             using var cn = Db.GetConnection();
             using var cmd = new MySqlCommand(@"
-UPDATE mesures
-SET DateMesure=@d, Glycemie=@g, ContexteRepas=@r, Activite=@a
-WHERE Id=@id AND UserId=@u", cn);
+         UPDATE mesures
+         SET DateMesure=@d, Glycemie=@g, ContexteRepas=@r, Activite=@a
+         WHERE Id=@id AND UserId=@u", cn);
             cmd.Parameters.AddWithValue("@d", m.DateMesure);
             cmd.Parameters.AddWithValue("@g", m.Glycemie);
             cmd.Parameters.AddWithValue("@r", string.IsNullOrWhiteSpace(m.ContexteRepas) ? (object)DBNull.Value : m.ContexteRepas);
@@ -67,16 +76,18 @@ WHERE Id=@id AND UserId=@u", cn);
             cmd.ExecuteNonQuery();
         }
 
+        // SUPPRESSION
         public void Delete(int id, int userId)
         {
             using var cn = Db.GetConnection();
-            using var cmd = new MySqlCommand(@"DELETE FROM mesures WHERE Id=@id AND UserId=@u", cn);
+            using var cmd = new MySqlCommand(
+                "DELETE FROM mesures WHERE Id=@id AND UserId=@u", cn);
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Parameters.AddWithValue("@u", userId);
             cmd.ExecuteNonQuery();
         }
 
-
+        // Mapping d'une ligne SQL -> objet C#
         private static MeasureDb Map(MySqlDataReader rd)
         {
             string GetString(string col) =>

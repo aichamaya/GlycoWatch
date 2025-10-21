@@ -1,0 +1,84 @@
+﻿<Page x:Class="GlycoWatch_version_prof.Views.PageAccueil"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Accueil" FontFamily="Segoe UI" FontSize="14">
+
+    <!-- Petits styles simples -->
+    <Page.Resources>
+        <SolidColorBrush x:Key="ColFond" Color="#F7F7F7"/>
+        <SolidColorBrush x:Key="ColBordure" Color="#22000000"/>
+
+        <Style x:Key="Carte" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColBordure}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#16A34A"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="TitreBloc" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="{StaticResource ColFond}">
+        <Grid Margin="16" Width="1000">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- En-tête -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Accueil" FontSize="22" FontWeight="Bold"/>
+                <TextBlock x:Name="LblBienvenueAccueil"
+                   FontSize="16" Margin="12,4,0,0" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Raccourcis -->
+            <Border Grid.Row="1" Style="{StaticResource Carte}" Margin="0,12,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Mes mesures" Click="AllerMesures_Click"/>
+                    <Button Content="Mon profil" Click="AllerProfil_Click"/>
+                    <Button Content="Mes tendances" Click="AllerTendances_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Petits indicateurs (facultatifs) -->
+            <Border Grid.Row="2" Style="{StaticResource Carte}" Margin="0,12,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Mesures (7 jours)" Style="{StaticResource TitreBloc}"/>
+                        <TextBlock x:Name="LblNbMesures" FontSize="18"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Moyenne (7 jours)" Style="{StaticResource TitreBloc}"/>
+                        <TextBlock x:Name="LblMoyenne7" FontSize="18"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="% en zone (7 jours)" Style="{StaticResource TitreBloc}"/>
+                        <TextBlock x:Name="LblPctZone7" FontSize="18"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

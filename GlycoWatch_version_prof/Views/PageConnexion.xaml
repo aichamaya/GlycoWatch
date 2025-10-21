@@ -1,0 +1,30 @@
+﻿<Page x:Class="GlycoWatch_version_prof.Views.PageConnexion"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Connexion" FontFamily="Segoe UI" FontSize="14">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Connexion" FontSize="22" FontWeight="Bold" Margin="0,0,0,16"/>
+
+        <StackPanel Grid.Row="1" Width="340">
+            <TextBlock Text="Pseudo" />
+            <TextBox x:Name="TxtPseudo" Margin="0,4,0,12"/>
+
+            <TextBlock Text="Mot de passe" />
+            <PasswordBox x:Name="TxtPassword" Margin="0,4,0,12"/>
+
+            <Button Content="Se connecter" Click="BtnLogin_Click" Height="34" />
+
+            <TextBlock x:Name="LblError" Foreground="Crimson" Margin="0,12,0,0" TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                <TextBlock Text="Pas de compte ? " VerticalAlignment="Center"/>
+                <Button Content="Créer un compte" Click="GoInscription_Click" Padding="4,2" Margin="6,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

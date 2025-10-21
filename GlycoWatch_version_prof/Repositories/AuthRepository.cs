@@ -1,8 +1,7 @@
-﻿using System;
-using MySql.Data.MySqlClient;
-using GlycoWatch_version_prof.Data;
+﻿using GlycoWatch_version_prof.Data;
 using GlycoWatch_version_prof.Models;
 using GlycoWatch_version_prof.Security;
+using MySql.Data.MySqlClient;
 
 namespace GlycoWatch_version_prof.Repositories
 {
@@ -31,9 +30,9 @@ namespace GlycoWatch_version_prof.Repositories
 
             using var cn = Db.GetConnection();
             using var cmd = new MySqlCommand(@"
-INSERT INTO users (Nom, Pseudo, PasswordHash, PasswordSalt, DateNaissance, Unite, Notifications)
-VALUES (@n, @p, @h, @s, @d, 'mmol/L', 1);
-SELECT LAST_INSERT_ID();", cn);
+            INSERT INTO users (Nom, Pseudo, PasswordHash, PasswordSalt, DateNaissance, Unite, Notifications)
+            VALUES (@n, @p, @h, @s, @d, 'mmol/L', 1);
+            SELECT LAST_INSERT_ID();", cn);
 
             cmd.Parameters.AddWithValue("@n", nom.Trim());
             cmd.Parameters.AddWithValue("@p", pseudo.Trim());

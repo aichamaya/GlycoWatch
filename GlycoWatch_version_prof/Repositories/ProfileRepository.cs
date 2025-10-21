@@ -1,5 +1,5 @@
-﻿using MySql.Data.MySqlClient;
-using GlycoWatch_version_prof.Data;
+﻿using GlycoWatch_version_prof.Data;
+using MySql.Data.MySqlClient;
 
 namespace GlycoWatch_version_prof.Repositories
 {

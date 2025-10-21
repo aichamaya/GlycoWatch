@@ -2,19 +2,25 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
-    <Compile Update="Views\HomePage.xaml.cs">
+    <Compile Update="Views\PageAcceuil.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\LoginPage.xaml.cs">
+    <Compile Update="Views\PageConnexion.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\MeasuresPage.xaml.cs">
+    <Compile Update="Views\PageHistorique.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\ProfilePage.xaml.cs">
+    <Compile Update="Views\PageMesures.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\RegisterPage.xaml.cs">
+    <Compile Update="Views\PageProfil.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PageInscription.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PageTendances.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

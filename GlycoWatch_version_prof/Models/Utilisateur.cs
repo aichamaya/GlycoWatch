@@ -1,6 +1,4 @@
-﻿using GlycoWatch_version_prof.Models;
-
-namespace GlycoWatch_version_prof.Models
+﻿namespace GlycoWatch_version_prof.Models
 
 {
     public class Utilisateur

@@ -1,0 +1,68 @@
+﻿<Page x:Class="GlycoWatch_version_prof.Views.PageHistorique"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Historique"
+      FontFamily="Segoe UI"
+      FontSize="14">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barre d’actions -->
+        <StackPanel Orientation="Horizontal">
+            <Button Content="← Retour" Click="Retour_Click" Margin="0,0,8,0"/>
+            <TextBlock Text="Historique des mesures"
+                 FontSize="22" FontWeight="Bold"
+                 VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Filtres -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,8">
+            <TextBlock Text="Depuis" VerticalAlignment="Center"/>
+            <DatePicker x:Name="FiltreDepuis" Width="150" Margin="6,0,12,0"/>
+
+            <TextBlock Text="Jusqu’à" VerticalAlignment="Center"/>
+            <DatePicker x:Name="FiltreJusqua" Width="150" Margin="6,0,12,0"/>
+
+            <TextBlock Text="Repas" VerticalAlignment="Center"/>
+            <TextBox x:Name="FiltreRepas" Width="140" Margin="6,0,12,0"/>
+
+            <TextBlock Text="Activité" VerticalAlignment="Center"/>
+            <TextBox x:Name="FiltreActivite" Width="140" Margin="6,0,12,0"/>
+
+            <Button Content="Filtrer" Click="Filtrer_Click" Margin="0,0,8,0"/>
+            <Button Content="Réinitialiser" Click="Reinitialiser_Click"/>
+        </StackPanel>
+
+        <!-- Tableau + exports -->
+        <DockPanel Grid.Row="2">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                <Button Content="Exporter CSV" Click="ExporterCsv_Click" Margin="0,0,8,0"/>
+                <Button Content="Exporter JSON" Click="ExporterJson_Click"/>
+            </StackPanel>
+
+            <DataGrid x:Name="Grille" AutoGenerateColumns="False" CanUserAddRows="False">
+                <DataGrid.Columns>
+
+                    <!-- ✅ Colonne “Quand” en Template pour formater la date sans StringFormat sur DataGridTextColumn -->
+                    <DataGridTemplateColumn Header="Quand" Width="2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DateMesure, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Gly"     Width="*" Binding="{Binding Glycemie}"/>
+                    <DataGridTextColumn Header="Repas"   Width="*" Binding="{Binding ContexteRepas}"/>
+                    <DataGridTextColumn Header="Activité" Width="*" Binding="{Binding Activite}"/>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</Page>
