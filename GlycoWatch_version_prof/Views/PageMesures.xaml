@@ -5,126 +5,205 @@
       FontFamily="Segoe UI" FontSize="14">
 
     <Page.Resources>
-        <SolidColorBrush x:Key="CouleurBordure" Color="#22000000"/>
-        <Style x:Key="Carte" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="16"/>
-            <Setter Property="BorderBrush" Value="{StaticResource CouleurBordure}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="8" ShadowDepth="2" Opacity="0.18"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="0,4,0,12"/>
-            <Setter Property="Padding" Value="6"/>
-            <Setter Property="Width" Value="260"/>
-        </Style>
-        <Style TargetType="DatePicker">
-            <Setter Property="Margin" Value="0,4,0,12"/>
-            <Setter Property="Width" Value="260"/>
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Background" Value="#16A34A"/>
+        <!-- Couleurs simples -->
+        <SolidColorBrush x:Key="FondPage" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="VertPrimaire" Color="#16A34A"/>
+        <SolidColorBrush x:Key="GrisClair" Color="#EEEEEE"/>
+
+        <!-- Styles de boutons -->
+        <Style x:Key="BoutonPrincipal" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource VertPrimaire}"/>
             <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
         </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,8,0,0"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+
+        <Style x:Key="BoutonSecondaire" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource GrisClair}"/>
+            <Setter Property="Foreground" Value="#111111"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
         </Style>
     </Page.Resources>
 
-    <Grid Background="#F7F7F7">
-        <Grid Margin="16" Width="880">
+    <Grid Background="{StaticResource FondPage}">
+        <Grid Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <!-- Titre + retour -->
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <!-- Formulaire -->
                 <RowDefinition Height="*"/>
+                <!-- Grille -->
+                <RowDefinition Height="Auto"/>
+                <!-- Filtres -->
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal">
-                <Button Content="← Retour" Click="Retour_Click"/>
-                <TextBlock Text="Mesures" FontSize="22" FontWeight="Bold" Margin="12,0,0,0"/>
-            </StackPanel>
+            <!-- Bande titre -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                <Button Content="← Retour"
+                        Click="Retour_Click"
+                        Style="{StaticResource BoutonSecondaire}"
+                        Margin="0,0,8,0"/>
+                <TextBlock Text="Mesures"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+            </DockPanel>
 
-            <!-- Formulaire vertical -->
-            <Border Grid.Row="1" Style="{StaticResource Carte}" Margin="0,12,0,0">
-                <StackPanel>
-                    <TextBlock Text="Glycémie (mmol/L)"/>
-                    <TextBox x:Name="ChampGlycemie" ToolTip="Ex : 6.2"/>
+            <!-- Formulaire d'ajout / édition -->
+            <Border Grid.Row="1"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="16"
+                    BorderBrush="#22000000"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Date de la mesure"/>
-                    <DatePicker x:Name="ChampDate"/>
+                    <!-- Champs -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Text="Heure de la mesure (HH:MM)"/>
-                    <TextBox x:Name="ChampHeure" Text="12:00" Width="120"/>
+                        <!-- Glycémie -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Glycémie (mmol/L)" Width="140" VerticalAlignment="Center"/>
+                            <TextBox x:Name="ChampGlycemie" Width="120"/>
+                        </StackPanel>
 
-                    <TextBlock Text="Contexte repas (ex : Avant repas, Déjeuner...)"/>
-                    <TextBox x:Name="ChampRepas" Width="340"/>
+                        <!-- Date -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Date" Width="140" VerticalAlignment="Center"/>
+                            <DatePicker x:Name="ChampDate" Width="150"/>
+                        </StackPanel>
 
-                    <TextBlock Text="Activité (ex : Marche 20 min)"/>
-                    <TextBox x:Name="ChampActivite" Width="340"/>
+                        <!-- Heure -->
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Heure (HH:MM)" Width="140" VerticalAlignment="Center"/>
+                            <TextBox x:Name="ChampHeure" Width="80"/>
+                        </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                        <Button Content="Ajouter / Enregistrer" Click="AjouterOuEnregistrer_Click"/>
-                        <Button Content="Modifier la sélection" Click="ModifierSelection_Click"/>
-                        <Button Content="Supprimer la sélection" Click="SupprimerSelection_Click"/>
+                        <!-- Contexte repas -->
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Contexte repas" Width="140" VerticalAlignment="Center"/>
+                            <TextBox x:Name="ChampRepas" Width="260"/>
+                        </StackPanel>
+
+                        <!-- Activité -->
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <TextBlock Text="Activité" Width="140" VerticalAlignment="Center"/>
+                            <TextBox x:Name="ChampActivite" Width="260"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Boutons d'action -->
+                    <StackPanel Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                        <!-- On donne des noms pour éviter l'erreur "BtnModifier n'existe pas" -->
+                        <Button x:Name="BtnAjouter"
+                                Content="Ajouter / Enregistrer"
+                                Click="AjouterOuEnregistrer_Click"
+                                Style="{StaticResource BoutonPrincipal}"/>
+
+                        <Button x:Name="BtnModifier"
+                                Content="Modifier la sélection"
+                                Click="ModifierSelection_Click"
+                                Style="{StaticResource BoutonSecondaire}"
+                                Margin="0,8,0,0"/>
+
+                        <Button x:Name="BtnSupprimer"
+                                Content="Supprimer la sélection"
+                                Click="SupprimerSelection_Click"
+                                Style="{StaticResource BoutonSecondaire}"
+                                Margin="0,8,0,0"/>
                     </StackPanel>
-                </StackPanel>
+                </Grid>
             </Border>
 
-            <!-- Filtres -->
-            <Border Grid.Row="2" Style="{StaticResource Carte}" Margin="0,12,0,0">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Filtrer les mesures" FontSize="16" Margin="0,0,0,8"/>
-                    <WrapPanel>
-                        <StackPanel Margin="0,0,24,0">
+            <!-- Grille des mesures -->
+            <Border Grid.Row="2"
+                    Margin="0,12,0,12"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="8"
+                    BorderBrush="#22000000"
+                    BorderThickness="1">
+                <DataGrid x:Name="Grille"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          HeadersVisibility="Column"
+                          Margin="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Quand"
+                                            Binding="{Binding DateMesure, StringFormat='yyyy-MM-dd HH:mm'}"
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Gly"
+                                            Binding="{Binding Glycemie}"
+                                            Width="80"/>
+                        <DataGridTextColumn Header="Repas"
+                                            Binding="{Binding ContexteRepas}"
+                                            Width="*"/>
+                        <DataGridTextColumn Header="Activité"
+                                            Binding="{Binding Activite}"
+                                            Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Zone de filtres -->
+            <Border Grid.Row="3"
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="12"
+                    BorderBrush="#22000000"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Filtrer les mesures" FontWeight="Bold" Margin="0,0,0,8"/>
+
+                    <UniformGrid Columns="4" Margin="0,0,0,8">
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Depuis la date"/>
                             <DatePicker x:Name="FiltreDepuis"/>
                         </StackPanel>
-                        <StackPanel Margin="0,0,24,0">
+
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Jusqu'à la date"/>
                             <DatePicker x:Name="FiltreJusqua"/>
                         </StackPanel>
-                        <StackPanel Margin="0,0,24,0">
+
+                        <StackPanel Margin="0,0,8,0">
                             <TextBlock Text="Repas contient"/>
-                            <TextBox x:Name="FiltreRepas" Width="220"/>
+                            <TextBox x:Name="FiltreRepas"/>
                         </StackPanel>
+
                         <StackPanel>
                             <TextBlock Text="Activité contient"/>
-                            <TextBox x:Name="FiltreActivite" Width="220"/>
+                            <TextBox x:Name="FiltreActivite"/>
                         </StackPanel>
-                    </WrapPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                        <Button Content="Appliquer les filtres" Click="Filtrer_Click"/>
-                        <Button Content="Réinitialiser" Click="ReinitialiserFiltres_Click"/>
+                    </UniformGrid>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Appliquer les filtres"
+                                Click="Filtrer_Click"
+                                Style="{StaticResource BoutonSecondaire}"/>
+                        <Button Content="Réinitialiser"
+                                Click="ReinitialiserFiltres_Click"
+                                Style="{StaticResource BoutonSecondaire}"/>
                     </StackPanel>
                 </StackPanel>
-            </Border>
-
-            <!-- Tableau -->
-            <Border Grid.Row="3" Style="{StaticResource Carte}" Margin="0,12,0,0">
-                <DataGrid x:Name="Grille"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Vertical"
-                  RowHeaderWidth="0">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Quand" Binding="{Binding DateMesure}" Width="2*"/>
-                        <DataGridTextColumn Header="Gly (mmol/L)" Binding="{Binding Glycemie}" Width="*"/>
-                        <DataGridTextColumn Header="Repas" Binding="{Binding ContexteRepas}" Width="*"/>
-                        <DataGridTextColumn Header="Activité" Binding="{Binding Activite}" Width="2*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
             </Border>
         </Grid>
     </Grid>

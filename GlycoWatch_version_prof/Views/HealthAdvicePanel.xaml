@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="GlycoWatch_version_prof.Views.Controls.HealthAdvicePanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="360">
+    <!-- Carte contenant un titre + liste de conseils -->
+    <Border Style="{StaticResource StyleCarte}">
+        <StackPanel>
+            <TextBlock Text="Conseils santé" Style="{StaticResource H2}" Margin="0,0,0,8"/>
+            <ItemsControl x:Name="ListTips">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Ellipse Width="6" Height="6" Fill="{StaticResource BrushPrimary}" Margin="0,6,8,0"/>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Contexte (période + % dans la cible) -->
+            <TextBlock x:Name="LblContext"
+                       Margin="0,8,0,0"
+                       Foreground="{StaticResource BrushMuted}"
+                       FontSize="12"/>
+        </StackPanel>
+    </Border>
+</UserControl>

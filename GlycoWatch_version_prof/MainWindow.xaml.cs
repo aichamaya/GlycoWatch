@@ -1,102 +1,49 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using GlycoWatch_version_prof.Views;
 
 namespace GlycoWatch_version_prof
 {
-    /// <summary>
-    /// Fenêtre principale très simple : elle affiche ou cache la barre du haut
-    /// selon l'état de connexion, et navigue entre les pages.
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            AllerConnexion(); // démarrer sur la page de connexion
         }
 
-        // Au chargement de la fenêtre : si déjà connecté -> Accueil, sinon -> Connexion
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (App.CurrentUser != null)
-                AllerAccueil();
-            else
-                AllerConnexion();
-
-            RafraichirBienvenue();
-        }
-
-        /// <summary>Affiche un message de bienvenue ou le nom de l'appli.</summary>
-        private void RafraichirBienvenue()
-        {
-            if (LblBienvenue == null) return;
-            LblBienvenue.Text = (App.CurrentUser != null)
-                ? $"Bonjour, {App.CurrentUser.Nom}"
-                : "GlycoWatch";
-        }
-
-        /// <summary>Affiche/masque la barre du haut.</summary>
+        // --- Helpers ---
         private void AfficherBarre(bool visible)
         {
-            if (BarreHaut == null) return;
-            BarreHaut.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            BarreLiens.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            LblUser.Text = App.CurrentUser != null ? App.CurrentUser.Nom : "";
         }
 
-
-        
-        public void AllerAccueil()
+        private void Navigue(Page p, bool afficherBarre)
         {
-            AfficherBarre(true);
-            Cadre.Navigate(new Views.PageAccueil());
-            RafraichirBienvenue();
+            Cadre.Navigate(p);
+            AfficherBarre(afficherBarre);
         }
 
-        public void AllerProfil()
+        // --- Routes publiques (utilisées par les pages) ---
+        public void AllerConnexion() => Navigue(new PageConnexion(), false);
+        public void AllerInscription() => Navigue(new PageInscription(), false);
+
+        public void AllerAccueil() => Navigue(new PageAccueil(), true);
+        public void AllerProfil() => Navigue(new PageProfil(), true);
+        public void AllerMesures() => Navigue(new PageMesures(), true);
+        public void AllerTendances() => Navigue(new PageTendances(), true);
+        public void AllerHistorique() => Navigue(new PageHistorique(), true);
+
+        // --- Boutons barre ---
+        private void BtnAccueil_Click(object s, RoutedEventArgs e) => AllerAccueil();
+        private void BtnProfil_Click(object s, RoutedEventArgs e) => AllerProfil();
+        private void BtnMesures_Click(object s, RoutedEventArgs e) => AllerMesures();
+        private void BtnTendances_Click(object s, RoutedEventArgs e) => AllerTendances();
+        private void BtnHistorique_Click(object s, RoutedEventArgs e) => AllerHistorique();
+
+        private void BtnDeconnexion_Click(object s, RoutedEventArgs e)
         {
-            AfficherBarre(true);
-            Cadre.Navigate(new Views.PageProfil());
-        }
-
-        public void AllerMesures()
-        {
-            AfficherBarre(true);
-            Cadre.Navigate(new Views.PageMesures());
-        }
-
-        public void AllerTendances()
-        {
-            AfficherBarre(true);
-            Cadre.Navigate(new Views.PageTendances());
-        }
-
-        public void AllerHistorique()
-        {
-            AfficherBarre(true);
-            Cadre.Navigate(new Views.PageHistorique());
-        }
-
-        public void AllerConnexion()
-        {
-            AfficherBarre(false);
-            Cadre.Navigate(new Views.PageConnexion());
-        }
-
-        public void AllerInscription()
-        {
-            AfficherBarre(false); 
-            Cadre.Navigate(new Views.PageInscription());
-        }
-
-        // ------------------- Boutons de la barre -------------------
-
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e) => AllerAccueil();
-        private void BtnProfil_Click(object sender, RoutedEventArgs e) => AllerProfil();
-        private void BtnMesures_Click(object sender, RoutedEventArgs e) => AllerMesures();
-        private void BtnTendances_Click(object sender, RoutedEventArgs e) => AllerTendances();
-        private void BtnHistorique_Click(object sender, RoutedEventArgs e) => AllerHistorique();
-
-        private void BtnLogout_Click(object sender, RoutedEventArgs e)
-        {
-            // Déconnexion simple
             App.CurrentUser = null;
             AllerConnexion();
         }

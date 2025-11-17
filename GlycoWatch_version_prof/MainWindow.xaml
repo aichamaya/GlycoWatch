@@ -1,34 +1,30 @@
 ﻿<Window x:Class="GlycoWatch_version_prof.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="GlycoWatch" Height="720" Width="1100"
-        WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
-    <DockPanel LastChildFill="True">
+        Title="GlycoWatch" Height="720" Width="1200"
+        WindowStartupLocation="CenterScreen">
 
-        <!-- Barre du haut : cachée tant que l'utilisateur n'est pas connecté -->
-        <StackPanel x:Name="BarreHaut"
-                    DockPanel.Dock="Top"
-                    Orientation="Horizontal"
-                    Margin="10"
-                    Visibility="Collapsed">
-            <TextBlock x:Name="LblBienvenue"
-                       Text="GlycoWatch"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="0,0,16,0"/>
-            <Button Content="Accueil"     Click="BtnAccueil_Click"    Margin="0,0,6,0"/>
-            <Button Content="Profil"      Click="BtnProfil_Click"     Margin="0,0,6,0"/>
-            <Button Content="Mesures"     Click="BtnMesures_Click"    Margin="0,0,6,0"/>
-            <Button Content="Tendances"   Click="BtnTendances_Click"  Margin="0,0,6,0"/>
-            <Button Content="Historique"  Click="BtnHistorique_Click" Margin="0,0,6,0"/>
-            <Button Content="Déconnexion" Click="BtnLogout_Click"/>
-        </StackPanel>
+    <DockPanel>
 
-        <!-- Contenu central (pages) -->
-        <Frame x:Name="Cadre"
-               NavigationUIVisibility="Hidden"
-               Margin="10"
-               Background="White"/>
+        <!-- BARRE DU HAUT : UNE SEULE FOIS ICI -->
+        <Border DockPanel.Dock="Top" Background="#F7F7F7" BorderBrush="#DDD" BorderThickness="0,0,0,1">
+            <StackPanel x:Name="BarreLiens" Orientation="Horizontal" Margin="12" Visibility="Collapsed">
+                <TextBlock Text="Bonjour, " VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBlock x:Name="LblUser" VerticalAlignment="Center" Margin="4,0,12,0"/>
+
+                <Button Content="Accueil"     Click="BtnAccueil_Click"     Margin="6,0"/>
+                <Button Content="Profil"      Click="BtnProfil_Click"      Margin="6,0"/>
+                <Button Content="Mesures"     Click="BtnMesures_Click"     Margin="6,0"/>
+                <Button Content="Tendances"   Click="BtnTendances_Click"   Margin="6,0"/>
+                <Button Content="Historique"  Click="BtnHistorique_Click"  Margin="6,0"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Déconnexion" Click="BtnDeconnexion_Click" Margin="24,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- CONTENU -->
+        <Frame x:Name="Cadre" NavigationUIVisibility="Hidden"/>
     </DockPanel>
 </Window>

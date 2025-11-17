@@ -10,11 +10,23 @@
 
   <ItemGroup>
     <None Remove="Assets\diabete_bg.jpg" />
+    <None Remove="Images\bg_diabete.jpg" />
+    <None Remove="Images\diabete-type2.jpg" />
+    <None Remove="Images\iamge-1.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="9.4.0" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\diabete-type2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\iamge-1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
