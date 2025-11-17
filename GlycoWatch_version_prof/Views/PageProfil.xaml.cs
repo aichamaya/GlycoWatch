@@ -55,6 +55,7 @@ namespace GlycoWatch_version_prof.Views
 
         private void Retour_Click(object sender, RoutedEventArgs e)
         {
+
             if (Window.GetWindow(this) is MainWindow shell) shell.AllerAccueil();
         }
     }
