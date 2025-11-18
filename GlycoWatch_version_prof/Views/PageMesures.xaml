@@ -5,7 +5,7 @@
       FontFamily="Segoe UI" FontSize="14">
 
     <Page.Resources>
-        <!-- Couleurs simples -->
+        <!-- Couleurs -->
         <SolidColorBrush x:Key="FondPage" Color="#F5F5F5"/>
         <SolidColorBrush x:Key="VertPrimaire" Color="#16A34A"/>
         <SolidColorBrush x:Key="GrisClair" Color="#EEEEEE"/>
@@ -30,16 +30,12 @@
         <Grid Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- Titre + retour -->
                 <RowDefinition Height="Auto"/>
-                <!-- Formulaire -->
                 <RowDefinition Height="*"/>
-                <!-- Grille -->
                 <RowDefinition Height="Auto"/>
-                <!-- Filtres -->
             </Grid.RowDefinitions>
 
-            <!-- Bande titre -->
+            <!-- Titre -->
             <DockPanel Grid.Row="0" Margin="0,0,0,12">
                 <Button Content="← Retour"
                         Click="Retour_Click"
@@ -51,7 +47,7 @@
                            VerticalAlignment="Center"/>
             </DockPanel>
 
-            <!-- Formulaire d'ajout / édition -->
+            <!-- Formulaire -->
             <Border Grid.Row="1"
                     Background="White"
                     CornerRadius="10"
@@ -74,42 +70,36 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Glycémie -->
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Glycémie (mmol/L)" Width="140" VerticalAlignment="Center"/>
                             <TextBox x:Name="ChampGlycemie" Width="120"/>
                         </StackPanel>
 
-                        <!-- Date -->
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Date" Width="140" VerticalAlignment="Center"/>
                             <DatePicker x:Name="ChampDate" Width="150"/>
                         </StackPanel>
 
-                        <!-- Heure -->
                         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Heure (HH:MM)" Width="140" VerticalAlignment="Center"/>
                             <TextBox x:Name="ChampHeure" Width="80"/>
                         </StackPanel>
 
-                        <!-- Contexte repas -->
                         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="Contexte repas" Width="140" VerticalAlignment="Center"/>
                             <TextBox x:Name="ChampRepas" Width="260"/>
                         </StackPanel>
 
-                        <!-- Activité -->
                         <StackPanel Grid.Row="4" Orientation="Horizontal">
                             <TextBlock Text="Activité" Width="140" VerticalAlignment="Center"/>
                             <TextBox x:Name="ChampActivite" Width="260"/>
                         </StackPanel>
                     </Grid>
 
-                    <!-- Boutons d'action -->
+                    <!-- Boutons -->
                     <StackPanel Grid.Column="1"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top">
-                        <!-- On donne des noms pour éviter l'erreur "BtnModifier n'existe pas" -->
                         <Button x:Name="BtnAjouter"
                                 Content="Ajouter / Enregistrer"
                                 Click="AjouterOuEnregistrer_Click"
@@ -130,7 +120,7 @@
                 </Grid>
             </Border>
 
-            <!-- Grille des mesures -->
+            <!-- Grille -->
             <Border Grid.Row="2"
                     Margin="0,12,0,12"
                     Background="White"
@@ -163,7 +153,7 @@
                 </DataGrid>
             </Border>
 
-            <!-- Zone de filtres -->
+            <!-- Filtres -->
             <Border Grid.Row="3"
                     Background="White"
                     CornerRadius="10"

@@ -1,75 +1,87 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using GlycoWatch_version_prof.Views;
 
 namespace GlycoWatch_version_prof
 {
     /// <summary>
-    /// Fenêtre principale : contient le Frame "Cadre" et gère la navigation
-    /// entre Connexion, Accueil, Mesures, Profil, Tendances.
+    /// Fenêtre principale : contient la barre de navigation
+    /// et un Frame qui affiche les pages (connexion, accueil, mesures, etc.).
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-
-            // Au démarrage, on affiche la page de connexion
-            AllerConnexion();
+            Loaded += MainWindow_Loaded;
         }
 
-        // -------------------------
-        // Méthodes de navigation
-        // -------------------------
-
-        /// <summary>Affiche la page de connexion.</summary>
-        public void AllerConnexion()
+        /// <summary>
+        /// Au chargement, on affiche soit la connexion (si pas connecté),
+        /// soit la page d'accueil.
+        /// </summary>
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Cadre.Navigate(new PageConnexion());
+            if (App.CurrentUser == null)
+            {
+                AllerConnexion();
+            }
+            else
+            {
+                AllerAccueil();
+            }
         }
 
-        /// <summary>Affiche la page d'inscription.</summary>
-        public void AllerInscription()
-        {
-            Cadre.Navigate(new PageInscription());
-        }
+        // ========== NAVIGATION ==========
 
-        /// <summary>Affiche la page d'accueil.</summary>
         public void AllerAccueil()
         {
-            Cadre.Navigate(new PageAccueil());
+            FramePrincipal.Navigate(new PageAccueil());
         }
 
-        /// <summary>Affiche la page des mesures.</summary>
-        public void AllerMesures()
-        {
-            Cadre.Navigate(new PageMesures());
-        }
-
-        /// <summary>Affiche la page de profil.</summary>
         public void AllerProfil()
         {
-            Cadre.Navigate(new PageProfil());
+            FramePrincipal.Navigate(new PageProfil());
         }
 
-        /// <summary>Affiche la page des tendances.</summary>
+        public void AllerMesures()
+        {
+            FramePrincipal.Navigate(new PageMesures());
+        }
+
         public void AllerTendances()
         {
-            Cadre.Navigate(new PageTendances());
+            FramePrincipal.Navigate(new PageTendances());
         }
 
-        // ------------------------------------
-        // Gestion des clics sur les boutons
-        // (si utilisés dans MainWindow.xaml)
-        // ------------------------------------
+        public void AllerHistorique()
+        {
+            FramePrincipal.Navigate(new PageHistorique());
+        }
 
-        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        public void AllerConnexion()
+        {
+            FramePrincipal.Navigate(new PageConnexion());
+        }
+
+        public void AllerInscription()
+        {
+            FramePrincipal.Navigate(new PageInscription());
+        }
+
+        /// <summary>
+        /// Méthode utilisée par XAML (GoHome).
+        /// On la laisse publique pour éviter les erreurs.
+        /// </summary>
+        public void GoHome(object sender, RoutedEventArgs e)
         {
             AllerAccueil();
         }
 
-        private void BtnMesures_Click(object sender, RoutedEventArgs e)
+
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
         {
-            AllerMesures();
+            AllerAccueil();
         }
 
         private void BtnProfil_Click(object sender, RoutedEventArgs e)
@@ -77,25 +89,29 @@ namespace GlycoWatch_version_prof
             AllerProfil();
         }
 
+        private void BtnMesures_Click(object sender, RoutedEventArgs e)
+        {
+            AllerMesures();
+        }
+
         private void BtnTendances_Click(object sender, RoutedEventArgs e)
         {
             AllerTendances();
         }
 
-        private void BtnDeconnexion_Click(object sender, RoutedEventArgs e)
+        private void BtnHistorique_Click(object sender, RoutedEventArgs e)
         {
-            // On efface l'utilisateur courant puis on revient à Connexion
+            AllerHistorique();
+        }
+
+        private void BtnLogout_Click(object sender, RoutedEventArgs e)
+        {
             App.CurrentUser = null;
             AllerConnexion();
         }
-
-        /// <summary>
-        /// Méthode appelée par Click="GoHome" dans le XAML.
-        /// C'est juste un alias pour retourner à l'accueil.
-        /// </summary>
-        private void GoHome(object sender, RoutedEventArgs e)
+        public void GoHome()
         {
-            AllerAccueil();
+            GoHome(this, new RoutedEventArgs());
         }
     }
 }
