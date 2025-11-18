@@ -1,11 +1,10 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using GlycoWatch_version_prof.Views;
 
 namespace GlycoWatch_version_prof
 {
     /// <summary>
-    /// Fenêtre principale : contient un Frame (Cadre) et gère la navigation
+    /// Fenêtre principale : contient le Frame "Cadre" et gère la navigation
     /// entre Connexion, Accueil, Mesures, Profil, Tendances.
     /// </summary>
     public partial class MainWindow : Window
