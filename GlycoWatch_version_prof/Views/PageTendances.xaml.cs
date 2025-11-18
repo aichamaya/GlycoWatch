@@ -3,6 +3,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -14,6 +15,7 @@ namespace GlycoWatch_version_prof.Views
     /// Page des tendances :
     /// - stats sur 7 / 30 jours
     /// - courbe des glycémies
+    /// - conseils
     /// </summary>
     public partial class PageTendances : Page
     {
@@ -25,17 +27,17 @@ namespace GlycoWatch_version_prof.Views
 
         private void PageTendances_Loaded(object? sender, RoutedEventArgs e)
         {
-            ConstruireCourbe();
+            ConstruireTendances();
         }
 
         private void Periode_Changee(object sender, SelectionChangedEventArgs e)
         {
-            ConstruireCourbe();
+            ConstruireTendances();
         }
 
         private void Actualiser_Click(object sender, RoutedEventArgs e)
         {
-            ConstruireCourbe();
+            ConstruireTendances();
         }
 
         private void Retour_Click(object sender, RoutedEventArgs e)
@@ -46,6 +48,9 @@ namespace GlycoWatch_version_prof.Views
             }
         }
 
+        /// <summary>
+        /// Petit utilitaire pour mettre le texte dans les labels du haut.
+        /// </summary>
         private void SetTexte(string name, string text)
         {
             if (FindName(name) is TextBlock tb)
@@ -53,8 +58,12 @@ namespace GlycoWatch_version_prof.Views
                 tb.Text = text;
             }
         }
+
         private void AfficherConseil(List<MeasureDb> mesures, double cibleMin, double cibleMax)
         {
+            if (LblConseils == null)
+                return;
+
             if (mesures == null || mesures.Count == 0)
             {
                 LblConseils.Text = "Aucune mesure disponible. Pensez à enregistrer vos glycémies régulièrement.";
@@ -64,7 +73,7 @@ namespace GlycoWatch_version_prof.Views
             double moyenne = mesures.Average(m => m.Glycemie);
             int total = mesures.Count;
             int enCible = mesures.Count(m => m.Glycemie >= cibleMin && m.Glycemie <= cibleMax);
-            double pourcentage = (double)enCible / total * 100;
+            double pourcentage = total > 0 ? (double)enCible / total * 100.0 : 0.0;
 
             if (pourcentage >= 80)
             {
@@ -72,11 +81,11 @@ namespace GlycoWatch_version_prof.Views
             }
             else if (pourcentage >= 50)
             {
-                LblConseils.Text = $"Vous avez {pourcentage:0}% de mesures dans la cible. C’est encourageant, mais vous pouvez faire mieux 💪";
+                LblConseils.Text = $"Vous avez {pourcentage:0}% de mesures dans la cible. C’est encourageant, mais vous pouvez faire encore mieux 💪";
             }
             else
             {
-                LblConseils.Text = $"Seulement {pourcentage:0}% de vos mesures sont dans la cible. Pensez à revoir votre alimentation ou votre activité 🧠";
+                LblConseils.Text = $"Seulement {pourcentage:0}% de vos mesures sont dans la cible. Discutez avec votre professionnel de la santé pour ajuster votre routine 🧠";
             }
         }
 
@@ -84,8 +93,9 @@ namespace GlycoWatch_version_prof.Views
         /// Construit :
         /// - les stats (moyenne, min/max, % en cible, nb mesures)
         /// - la courbe des glycémies
+        /// - les conseils
         /// </summary>
-        private void ConstruireCourbe()
+        private void ConstruireTendances()
         {
             var u = App.CurrentUser;
             if (u == null)
@@ -94,23 +104,64 @@ namespace GlycoWatch_version_prof.Views
                 return;
             }
 
+            // Période : 7 ou 30 jours
             int nbJours = (CmbPeriode?.SelectedIndex ?? 0) == 1 ? 30 : 7;
             DateTime debut = DateTime.Today.AddDays(-nbJours + 1);
             DateTime finInclus = DateTime.Today.AddDays(1).AddSeconds(-1);
 
+            // Récupérer les mesures
             var mesures = App.Measures
                              .Filter(u.Id, debut, finInclus, string.Empty, string.Empty)
                              .OrderBy(m => m.DateMesure)
                              .ToList();
 
-            if (!mesures.Any())
+            // Statistiques + conseils même si le graphique est vide
+            double cibleMin = u.TargetLow ?? 4.0;
+            double cibleMax = u.TargetHigh ?? 10.0;
+
+            if (mesures.Count == 0)
             {
-                MessageBox.Show("Aucune mesure disponible pour cette période.", "Information");
+                SetTexte("TxtMoyenne", "-");
+                SetTexte("TxtMinMax", "-");
+                SetTexte("TxtPourcZone", "-");
+                SetTexte("TxtNbMesures", "0");
+
+                AfficherConseil(mesures, cibleMin, cibleMax);
+
+                if (PlotCourbes != null)
+                {
+                    PlotCourbes.Model = new PlotModel { Title = $"Glycémie sur {nbJours} jours" };
+                    PlotCourbes.InvalidatePlot(true);
+                }
+
                 return;
             }
 
-            var model = new PlotModel { Title = $"Glycémie sur {nbJours} jours" };
+            // Calcul stats
+            double moyenne = mesures.Average(m => m.Glycemie);
+            double min = mesures.Min(m => m.Glycemie);
+            double max = mesures.Max(m => m.Glycemie);
+            int nbMesures = mesures.Count;
+            int enZone = mesures.Count(m => m.Glycemie >= cibleMin && m.Glycemie <= cibleMax);
+            double pourcentageZone = (double)enZone / nbMesures * 100.0;
 
+            SetTexte("TxtMoyenne", $"{moyenne:0.0}");
+            SetTexte("TxtMinMax", $"{min:0.0} / {max:0.0}");
+            SetTexte("TxtPourcZone", $"{pourcentageZone:0}%");
+            SetTexte("TxtNbMesures", nbMesures.ToString(CultureInfo.InvariantCulture));
+
+            // Conseils
+            AfficherConseil(mesures, cibleMin, cibleMax);
+
+            // Construction du graphique
+            var model = new PlotModel
+            {
+                Title = $"Glycémie sur {nbJours} jours",
+                PlotMargins = new OxyThickness(50, 20, 20, 40),
+                Padding = new OxyThickness(10)
+            };
+
+            // Axe X : dates
             var axeX = new DateTimeAxis
             {
                 Position = AxisPosition.Bottom,
@@ -123,20 +174,28 @@ namespace GlycoWatch_version_prof.Views
             };
             model.Axes.Add(axeX);
 
+            // Axe Y : glycémie
             var axeY = new LinearAxis
             {
                 Position = AxisPosition.Left,
-                Title = "Glycémie (mmol/L)"
+                Title = "Glycémie (mmol/L)",
+                Minimum = 3,
+                Maximum = 15,
+                MajorStep = 1
             };
             model.Axes.Add(axeY);
 
+            // Courbe des glycémies
             var courbe = new LineSeries
             {
                 Title = "Glycémie",
                 MarkerType = MarkerType.Circle,
-                MarkerSize = 4,
+                MarkerSize = 5,
                 MarkerStroke = OxyColors.DarkBlue,
-                Color = OxyColors.SkyBlue
+                MarkerFill = OxyColors.White,
+                StrokeThickness = 2.5,
+                Color = OxyColors.SteelBlue,
+                //Smooth = true
             };
 
             foreach (var m in mesures)
@@ -146,8 +205,7 @@ namespace GlycoWatch_version_prof.Views
 
             model.Series.Add(courbe);
 
-            double yLow = u.TargetLow ?? 4.0;
-            double yHigh = u.TargetHigh ?? 10.0;
+            // Lignes de cible min / max
             double minX = DateTimeAxis.ToDouble(debut);
             double maxX = DateTimeAxis.ToDouble(finInclus);
 
@@ -158,8 +216,8 @@ namespace GlycoWatch_version_prof.Views
                 LineStyle = LineStyle.Dash,
                 StrokeThickness = 1
             };
-            ligneLow.Points.Add(new DataPoint(minX, yLow));
-            ligneLow.Points.Add(new DataPoint(maxX, yLow));
+            ligneLow.Points.Add(new DataPoint(minX, cibleMin));
+            ligneLow.Points.Add(new DataPoint(maxX, cibleMin));
             model.Series.Add(ligneLow);
 
             var ligneHigh = new LineSeries
@@ -169,16 +227,16 @@ namespace GlycoWatch_version_prof.Views
                 LineStyle = LineStyle.Dash,
                 StrokeThickness = 1
             };
-            ligneHigh.Points.Add(new DataPoint(minX, yHigh));
-            ligneHigh.Points.Add(new DataPoint(maxX, yHigh));
+            ligneHigh.Points.Add(new DataPoint(minX, cibleMax));
+            ligneHigh.Points.Add(new DataPoint(maxX, cibleMax));
             model.Series.Add(ligneHigh);
 
+            // Appliquer au PlotView
             if (PlotCourbes != null)
             {
                 PlotCourbes.Model = model;
                 PlotCourbes.InvalidatePlot(true);
             }
-
         }
     }
 }
