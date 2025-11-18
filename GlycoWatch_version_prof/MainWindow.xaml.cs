@@ -4,48 +4,99 @@ using GlycoWatch_version_prof.Views;
 
 namespace GlycoWatch_version_prof
 {
+    /// <summary>
+    /// Fenêtre principale : contient un Frame (Cadre) et gère la navigation
+    /// entre Connexion, Accueil, Mesures, Profil, Tendances.
+    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-            AllerConnexion(); // démarrer sur la page de connexion
+
+            // Au démarrage, on affiche la page de connexion
+            AllerConnexion();
         }
 
-        // --- Helpers ---
-        private void AfficherBarre(bool visible)
+        // -------------------------
+        // Méthodes de navigation
+        // -------------------------
+
+        /// <summary>Affiche la page de connexion.</summary>
+        public void AllerConnexion()
         {
-            BarreLiens.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-            LblUser.Text = App.CurrentUser != null ? App.CurrentUser.Nom : "";
+            Cadre.Navigate(new PageConnexion());
         }
 
-        private void Navigue(Page p, bool afficherBarre)
+        /// <summary>Affiche la page d'inscription.</summary>
+        public void AllerInscription()
         {
-            Cadre.Navigate(p);
-            AfficherBarre(afficherBarre);
+            Cadre.Navigate(new PageInscription());
         }
 
-        // --- Routes publiques (utilisées par les pages) ---
-        public void AllerConnexion() => Navigue(new PageConnexion(), false);
-        public void AllerInscription() => Navigue(new PageInscription(), false);
-
-        public void AllerAccueil() => Navigue(new PageAccueil(), true);
-        public void AllerProfil() => Navigue(new PageProfil(), true);
-        public void AllerMesures() => Navigue(new PageMesures(), true);
-        public void AllerTendances() => Navigue(new PageTendances(), true);
-        public void AllerHistorique() => Navigue(new PageHistorique(), true);
-
-        // --- Boutons barre ---
-        private void BtnAccueil_Click(object s, RoutedEventArgs e) => AllerAccueil();
-        private void BtnProfil_Click(object s, RoutedEventArgs e) => AllerProfil();
-        private void BtnMesures_Click(object s, RoutedEventArgs e) => AllerMesures();
-        private void BtnTendances_Click(object s, RoutedEventArgs e) => AllerTendances();
-        private void BtnHistorique_Click(object s, RoutedEventArgs e) => AllerHistorique();
-
-        private void BtnDeconnexion_Click(object s, RoutedEventArgs e)
+        /// <summary>Affiche la page d'accueil.</summary>
+        public void AllerAccueil()
         {
+            Cadre.Navigate(new PageAccueil());
+        }
+
+        /// <summary>Affiche la page des mesures.</summary>
+        public void AllerMesures()
+        {
+            Cadre.Navigate(new PageMesures());
+        }
+
+        /// <summary>Affiche la page de profil.</summary>
+        public void AllerProfil()
+        {
+            Cadre.Navigate(new PageProfil());
+        }
+
+        /// <summary>Affiche la page des tendances.</summary>
+        public void AllerTendances()
+        {
+            Cadre.Navigate(new PageTendances());
+        }
+
+        // ------------------------------------
+        // Gestion des clics sur les boutons
+        // (si utilisés dans MainWindow.xaml)
+        // ------------------------------------
+
+        private void BtnAccueil_Click(object sender, RoutedEventArgs e)
+        {
+            AllerAccueil();
+        }
+
+        private void BtnMesures_Click(object sender, RoutedEventArgs e)
+        {
+            AllerMesures();
+        }
+
+        private void BtnProfil_Click(object sender, RoutedEventArgs e)
+        {
+            AllerProfil();
+        }
+
+        private void BtnTendances_Click(object sender, RoutedEventArgs e)
+        {
+            AllerTendances();
+        }
+
+        private void BtnDeconnexion_Click(object sender, RoutedEventArgs e)
+        {
+            // On efface l'utilisateur courant puis on revient à Connexion
             App.CurrentUser = null;
             AllerConnexion();
+        }
+
+        /// <summary>
+        /// Méthode appelée par Click="GoHome" dans le XAML.
+        /// C'est juste un alias pour retourner à l'accueil.
+        /// </summary>
+        private void GoHome(object sender, RoutedEventArgs e)
+        {
+            AllerAccueil();
         }
     }
 }

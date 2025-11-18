@@ -10,6 +10,6 @@ namespace GlycoWatch_version_prof
         public static ProfileRepository Profiles { get; } = new ProfileRepository();
         public static MeasureRepository Measures { get; } = new MeasureRepository();
 
-        public static UserDb? CurrentUser { get; set; }   // ← remplace PatientCourant
+        public static UserDb? CurrentUser { get; set; }  
     }
 }

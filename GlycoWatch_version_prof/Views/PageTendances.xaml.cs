@@ -102,7 +102,7 @@ namespace GlycoWatch_version_prof.Views
             double cibleMin = u.TargetLow ?? 4.0;
             double cibleMax = u.TargetHigh ?? 10.0;
 
-            // 3) Statistiques
+            
             if (mesures.Count == 0)
             {
                 LblMoyenne.Text = "-";
