@@ -3,59 +3,179 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Profil">
 
-    <StackPanel Margin="16" VerticalAlignment="Top">
-        <!-- Titre + retour -->
-        <StackPanel Orientation="Horizontal">
-            <Button Content="← Retour" Click="Back_Click"/>
-            <TextBlock Text="Mon profil" FontSize="24" FontWeight="Bold" Margin="12,0,0,0"/>
+    <Grid Background="#1F3A93" Margin="10" >
+        <Grid.RowDefinitions>
+            <!-- En-tête -->
+            <RowDefinition Height="Auto"/>
+            <!-- Contenu -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- En-tête : retour + titre -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,10" LastChildFill="False">
+            <Button Content="← Retour"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Padding="6,3"
+                    Click="Back_Click"
+                    DockPanel.Dock="Left"
+                    Background="White"
+                    BorderBrush="#2D7FF9"
+                    BorderThickness="1"
+                    Foreground="#2D7FF9"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"/>
+
+            <TextBlock Text="Mon profil"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </DockPanel>
+
+        <!-- Contenu principal -->
+        <StackPanel Grid.Row="1"
+                    Margin="0"
+                    VerticalAlignment="Top"
+                    Orientation="Vertical" 
+                   >
+
+            <!-- Identité (lecture seule) -->
+            <Border Padding="16"
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="#FFE0E0E0"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Informations personnelles"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Text="Nom complet"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <TextBox   Grid.Column="1"
+                                   Grid.Row="0"
+                                   x:Name="TxtNom"
+                                   IsReadOnly="True"
+                                   Margin="0,0,0,4"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Text="Pseudo"
+                                   VerticalAlignment="Center"
+                                   Margin="0,4,8,0"/>
+                        <TextBox   Grid.Column="1"
+                                   Grid.Row="1"
+                                   x:Name="TxtPseudo"
+                                   Margin="0,4,0,4"
+                                   IsReadOnly="True"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="2"
+                                   Text="Date de naissance"
+                                   VerticalAlignment="Center"
+                                   Margin="0,4,8,0"/>
+                        <DatePicker Grid.Column="1"
+                                    Grid.Row="2"
+                                    x:Name="DpDob"
+                                    Margin="0,4,0,0"
+                                    IsEnabled="False"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Cibles glycémiques -->
+            <Border Padding="16"
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="#FFE0E0E0"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Cibles glycémiques"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="0"
+                                   Text="Cible minimale"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <TextBox   Grid.Column="1"
+                                   Grid.Row="0"
+                                   x:Name="TxtMin"
+                                   Width="120"
+                                   Margin="0,0,0,4"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="1"
+                                   Text="Cible maximale"
+                                   VerticalAlignment="Center"
+                                   Margin="0,4,8,0"/>
+                        <TextBox   Grid.Column="1"
+                                   Grid.Row="1"
+                                   x:Name="TxtMax"
+                                   Width="120"
+                                   Margin="0,4,0,4"/>
+
+                        <TextBlock Grid.Column="0"
+                                   Grid.Row="2"
+                                   Text="Unité"
+                                   VerticalAlignment="Center"
+                                   Margin="0,4,8,0"/>
+                        <TextBox   Grid.Column="1"
+                                   Grid.Row="2"
+                                   x:Name="TxtUnite"
+                                   Width="120"
+                                   Margin="0,4,0,0"
+                                   IsReadOnly="True"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Bouton d'enregistrement + message -->
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                <Button Content="Enregistrer"
+                        Width="140"
+                        Padding="6,3"
+                        Click="Save_Click"
+                        Background="#2D7FF9"
+                        Foreground="White"
+                        BorderThickness="0"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"/>
+
+                <TextBlock x:Name="LblInfo"
+                           Margin="12,4,0,0"
+                           VerticalAlignment="Center"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="#444"/>
+            </StackPanel>
+
         </StackPanel>
-
-        <!-- Identité (lecture seule) -->
-        <Border Margin="0,12,0,0" Padding="12" BorderBrush="#DDD" BorderThickness="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Nom complet" VerticalAlignment="Center"/>
-                <TextBox   Grid.Column="1" x:Name="TxtNom" IsReadOnly="True"/>
-
-                <TextBlock Grid.Column="0" Text="Pseudo" Margin="0,8,0,0" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBox   Grid.Column="1" x:Name="TxtPseudo" Margin="0,8,0,0" IsReadOnly="True" Grid.Row="1"/>
-
-                <TextBlock Grid.Column="0" Text="Date de naissance" Margin="0,8,0,0" Grid.Row="2" VerticalAlignment="Center"/>
-                <DatePicker Grid.Column="1" x:Name="DpDob" Margin="0,8,0,0" IsEnabled="False" Grid.Row="2"/>
-            </Grid>
-        </Border>
-
-        <!-- Cibles glycémiques -->
-        <Border Margin="0,12,0,0" Padding="12" BorderBrush="#DDD" BorderThickness="1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Cible min" VerticalAlignment="Center"/>
-                <TextBox   Grid.Column="1" x:Name="TxtMin" Width="120"/>
-
-                <TextBlock Grid.Column="0" Text="Cible max" Grid.Row="1" Margin="0,8,0,0" VerticalAlignment="Center"/>
-                <TextBox   Grid.Column="1" x:Name="TxtMax" Grid.Row="1" Margin="0,8,0,0" Width="120"/>
-
-                <TextBlock Grid.Column="0" Text="Unité" Grid.Row="2" Margin="0,8,0,0" VerticalAlignment="Center"/>
-                <TextBox   Grid.Column="1" x:Name="TxtUnite" Grid.Row="2" Margin="0,8,0,0" Width="120" IsReadOnly="True"/>
-            </Grid>
-        </Border>
-
-        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-            <Button Content="Enregistrer" Width="140" Click="Save_Click"/>
-            <TextBlock x:Name="LblInfo" Margin="12,4,0,0" VerticalAlignment="Center"/>
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </Page>

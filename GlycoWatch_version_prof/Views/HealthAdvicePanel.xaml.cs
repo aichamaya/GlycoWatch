@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GlycoWatch_version_prof.Views.Controls
 {
@@ -18,14 +19,18 @@ namespace GlycoWatch_version_prof.Views.Controls
             Loaded += (_, __) => Refresh();
         }
 
-        /// <summary>Recalcule les conseils selon les données actuelles.</summary>
+        /// <summary>
+        /// Recalcule les conseils selon les données actuelles.
+        /// </summary>
         public void Refresh()
         {
             var u = App.CurrentUser;
             if (u == null)
             {
+                LblContext.Text = string.Empty;
+                LblContext.Foreground = Brushes.Gray;
                 ListTips.ItemsSource = new[] { "Connectez-vous pour afficher des conseils personnalisés." };
-                LblContext.Text = "";
+                ListTips.Foreground = Brushes.Black;
                 return;
             }
 
@@ -33,7 +38,7 @@ namespace GlycoWatch_version_prof.Views.Controls
             DateTime fin = DateTime.Today.AddDays(1).AddSeconds(-1);
             DateTime debut = DateTime.Today.AddDays(-29);
 
-            // On récupère les mesures (triées) ; null-safe (string.Empty)
+            // On récupère les mesures (triées)
             var mesures = App.Measures
                              .Filter(u.Id, debut, fin, string.Empty, string.Empty)
                              .OrderBy(m => m.DateMesure)
@@ -41,8 +46,10 @@ namespace GlycoWatch_version_prof.Views.Controls
 
             if (mesures.Count == 0)
             {
-                ListTips.ItemsSource = new[] { "Aucune donnée récente. Enregistrez quelques mesures pour démarrer le suivi." };
                 LblContext.Text = "0 mesure sur les 30 derniers jours";
+                LblContext.Foreground = Brushes.Gray;
+                ListTips.ItemsSource = new[] { "Aucune donnée récente. Enregistrez quelques mesures pour démarrer le suivi." };
+                ListTips.Foreground = Brushes.Black;
                 return;
             }
 
@@ -54,6 +61,31 @@ namespace GlycoWatch_version_prof.Views.Controls
             double pct = ok * 100.0 / mesures.Count;
 
             LblContext.Text = $"{mesures.Count} mesures • {pct:0}% en zone ({min:0.0}-{max:0.0} mmol/L)";
+
+            // Couleurs selon le % en zone
+            // < 40 %  : rouge (alerte)
+            // 40-70 % : orange (attention)
+            // >= 70 % : vert (bravo)
+            SolidColorBrush couleurTexte;
+
+            if (pct < 40)
+            {
+                // Rouge : #DC2626
+                couleurTexte = new SolidColorBrush(Color.FromRgb(220, 38, 38));
+            }
+            else if (pct < 70)
+            {
+               
+                couleurTexte = new SolidColorBrush(Color.FromRgb(249, 115, 22));
+            }
+            else
+            {
+                
+                couleurTexte = new SolidColorBrush(Color.FromRgb(22, 163, 74));
+            }
+
+            LblContext.Foreground = couleurTexte;
+            ListTips.Foreground = couleurTexte;
 
             // Conseils simples selon 3 paliers
             List<string> tips;

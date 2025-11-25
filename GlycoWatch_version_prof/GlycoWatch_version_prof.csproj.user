@@ -17,9 +17,6 @@
     <Compile Update="Views\PageMesures.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\PageProfil.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\PageInscription.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

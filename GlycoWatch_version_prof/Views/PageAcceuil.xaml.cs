@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,29 +8,44 @@ namespace GlycoWatch_version_prof.Views
 {
     /// <summary>
     /// Page d'accueil avec raccourcis et petits indicateurs (sur 7 jours).
-    /// Code débutant et commenté.
+    /// Affiche :
+    /// - un message de bienvenue personnalisé;
+    /// - le nombre de mesures sur 7 jours;
+    /// - la moyenne de glycémie sur 7 jours;
+    /// - le pourcentage de mesures dans la zone cible.
     /// </summary>
     public partial class PageAccueil : Page
     {
+        /// <summary>
+        /// Constructeur : initialise la page et abonne l'événement Loaded.
+        /// </summary>
         public PageAccueil()
         {
             InitializeComponent();
             Loaded += PageAccueil_Loaded;
         }
 
+        /// <summary>
+        /// Événement appelé lorsque la page est chargée.
+        /// Met à jour le message de bienvenue et les indicateurs sur 7 jours.
+        /// </summary>
         private void PageAccueil_Loaded(object sender, RoutedEventArgs e)
         {
             // Texte de bienvenue
             if (App.CurrentUser != null)
+            {
                 LblBienvenueAccueil.Text = $"— Bonjour, {App.CurrentUser.Nom}";
+            }
             else
+            {
                 LblBienvenueAccueil.Text = "— Bonjour";
+            }
 
-            // Indicateurs sur 7 jours (si dépôt disponible)
+            // Indicateurs sur 7 jours
             try
             {
-                var u = App.CurrentUser;
-                if (u == null)
+                var utilisateur = App.CurrentUser;
+                if (utilisateur == null)
                 {
                     LblNbMesures.Text = "-";
                     LblMoyenne7.Text = "-";
@@ -36,12 +53,13 @@ namespace GlycoWatch_version_prof.Views
                     return;
                 }
 
-                DateTime debut = DateTime.Today.AddDays(-6); // 7 jours incluant aujourd'hui
+                // Période des 7 derniers jours : de J-6 à aujourd'hui inclus
+                DateTime debut = DateTime.Today.AddDays(-6);
                 DateTime fin = DateTime.Today.AddDays(1).AddSeconds(-1);
 
-                // Récupère les mesures (adapte si ton dépôt a un autre nom)
+                // Récupération des mesures de l'utilisateur sur cette période
                 var mesures = App.Measures
-                                 .Filter(u.Id, debut, fin, null, null)
+                                 .Filter(utilisateur.Id, debut, fin, null, null)
                                  .OrderBy(m => m.DateMesure)
                                  .ToList();
 
@@ -53,42 +71,67 @@ namespace GlycoWatch_version_prof.Views
                     return;
                 }
 
+                // Nombre total de mesures
                 LblNbMesures.Text = mesures.Count.ToString();
 
+                // Moyenne de glycémie
                 var valeurs = mesures.Select(m => m.Glycemie).ToList();
-                double moy = valeurs.Average();
-                LblMoyenne7.Text = moy.ToString("0.0", CultureInfo.InvariantCulture);
+                double moyenne = valeurs.Average();
+                LblMoyenne7.Text = moyenne.ToString("0.0", CultureInfo.InvariantCulture);
 
-                double cibleMin = u.TargetLow ?? 4.0;
-                double cibleMax = u.TargetHigh ?? 10.0;
-                int ok = valeurs.Count(v => v >= cibleMin && v <= cibleMax);
-                double pct = (ok * 100.0) / valeurs.Count;
+                // Pourcentage de mesures dans la cible
+                double cibleMin = utilisateur.TargetLow ?? 4.0;
+                double cibleMax = utilisateur.TargetHigh ?? 10.0;
 
-                LblPctZone7.Text = $"{pct:0}%";
+                int nbDansCible = valeurs.Count(v => v >= cibleMin && v <= cibleMax);
+                double pourcentage = (nbDansCible * 100.0) / valeurs.Count;
+
+                LblPctZone7.Text = $"{pourcentage:0}%";
             }
-            catch
+            catch (Exception)
             {
-                // En cas d'absence de dépôt ou d'erreur, on évite de crasher
+                // En cas d'erreur (par exemple dépôt non disponible), on évite de crasher
                 LblNbMesures.Text = "-";
                 LblMoyenne7.Text = "-";
                 LblPctZone7.Text = "-";
             }
         }
 
-        // Raccourcis navigation (via MainWindow)
+        // =========================
+        //   Raccourcis de navigation
+        // =========================
+
+        /// <summary>
+        /// Bouton "Aller aux mesures".
+        /// </summary>
         private void AllerMesures_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.GetWindow(this) is MainWindow shell) shell.AllerMesures();
+            if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
+            {
+                fenetrePrincipale.AllerMesures();
+            }
         }
 
+        /// <summary>
+        /// Bouton "Voir mon profil".
+        /// </summary>
         private void AllerProfil_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.GetWindow(this) is MainWindow shell) shell.AllerProfil();
+            if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
+            {
+                fenetrePrincipale.AllerProfil();
+            }
         }
 
+        /// <summary>
+        /// Bouton "Voir les tendances".
+        /// </summary>
         private void AllerTendances_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.GetWindow(this) is MainWindow shell) shell.AllerTendances();
+            if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
+            {
+                fenetrePrincipale.AllerTendances();
+            }
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GlycoWatch_version_prof.Views
 {
+    /// <summary>
+    /// Page permettant la création d’un nouveau compte utilisateur.
+    /// L’utilisateur doit fournir : nom, pseudo, mot de passe, date de naissance (optionnelle).
+    /// </summary>
     public partial class PageInscription : Page
     {
         public PageInscription()
@@ -10,36 +15,66 @@ namespace GlycoWatch_version_prof.Views
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Événement déclenché lorsqu’on clique sur le bouton “Créer le compte”.
+        /// Vérifie les champs, tente la création puis redirige vers la page de connexion.
+        /// </summary>
         private void BtnCreer_Click(object sender, RoutedEventArgs e)
         {
-            LblInfo.Text = "";
+            LblInfo.Text = string.Empty;
 
-            var nom = (TxtNom.Text ?? "").Trim();
-            var pseudo = (TxtPseudo.Text ?? "").Trim();
-            var mdp = TxtPassword.Password;
-            DateTime? naissance = DpNaissance.SelectedDate;
+            string nom = (TxtNom.Text ?? string.Empty).Trim();
+            string pseudo = (TxtPseudo.Text ?? string.Empty).Trim();
+            string motDePasse = TxtPassword.Password;
+            DateTime? dateNaissance = DpNaissance.SelectedDate;
 
-            if (string.IsNullOrWhiteSpace(nom) || string.IsNullOrWhiteSpace(pseudo) || string.IsNullOrWhiteSpace(mdp))
+            // Validation simple
+            if (string.IsNullOrWhiteSpace(nom) ||
+                string.IsNullOrWhiteSpace(pseudo) ||
+                string.IsNullOrWhiteSpace(motDePasse))
             {
-                LblInfo.Text = "Tous les champs sont obligatoires (nom, pseudo, mot de passe).";
+                LblInfo.Text = "Tous les champs obligatoires doivent être remplis (nom, pseudo, mot de passe).";
                 return;
             }
 
-            // Register(pseudo, mdp, nom, naissance) — signature à 4 paramètres
-            var nouvelUtilisateur = App.Auth.Register(pseudo, mdp, nom, naissance);
-            if (nouvelUtilisateur == null)
+            try
             {
-                LblInfo.Text = "Création impossible (pseudo déjà pris ?).";
-                return;
-            }
+                // Tentative d'enregistrement
+                var nouvelUtilisateur = App.Auth.Register(pseudo, motDePasse, nom, dateNaissance);
 
-            MessageBox.Show("Compte créé ! Vous pouvez vous connecter.");
-            if (Window.GetWindow(this) is MainWindow shell) shell.AllerConnexion();
+                if (nouvelUtilisateur == null)
+                {
+                    LblInfo.Text = "Impossible de créer le compte. Le pseudo est peut-être déjà utilisé.";
+                    return;
+                }
+
+                MessageBox.Show("Compte créé avec succès ! Vous pouvez maintenant vous connecter.",
+                                "Succès",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+
+                // Redirection vers la connexion
+                if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
+                {
+                    fenetrePrincipale.AllerConnexion();
+                }
+            }
+            catch (Exception)
+            {
+                // Message non technique pour l'utilisateur final
+                LblInfo.Text = "Une erreur est survenue lors de la création du compte. Veuillez réessayer.";
+            }
         }
 
+        /// <summary>
+        /// Lien “Déjà un compte ? Se connecter” → retourne à la page de connexion.
+        /// </summary>
         private void GoConnexion_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.GetWindow(this) is MainWindow shell) shell.AllerConnexion();
+            if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
+            {
+                fenetrePrincipale.AllerConnexion();
+            }
         }
     }
 }

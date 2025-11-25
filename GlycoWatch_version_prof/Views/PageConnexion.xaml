@@ -1,58 +1,105 @@
 ﻿<Page x:Class="GlycoWatch_version_prof.Views.PageConnexion"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Connexion" FontFamily="Segoe UI" FontSize="14">
+      Title="Connexion"
+      FontFamily="Segoe UI"
+      FontSize="14">
+
+    <Page.Resources>
+        <!-- Couleurs -->
+        <SolidColorBrush x:Key="VertPrimaire" Color="#16A34A"/>
+        <SolidColorBrush x:Key="FondClair" Color="#F3F4F6"/>
+        <SolidColorBrush x:Key="RougeErreur" Color="#C1272D"/>
+
+      
+        <Style x:Key="BoutonPrincipal" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource VertPrimaire}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+            <Setter Property="Height" Value="42"/>
+        </Style>
+
+        <!-- Bouton secondaire -->
+        <Style x:Key="BoutonSecondaire" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource FondClair}"/>
+            <Setter Property="Foreground" Value="#111"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Page.Resources>
+
 
     <Grid>
 
-        <!-- BACKGROUND = image -->
+        <!-- IMAGE DE FOND -->
         <Grid.Background>
-            
             <ImageBrush ImageSource="/Images/iamge-1.jpg"
                         Stretch="UniformToFill"
                         AlignmentX="Center"
                         AlignmentY="Center"/>
         </Grid.Background>
 
-        
-        <Rectangle Fill="#33000000"/>
+        <!-- Filtre foncé translucide -->
+        <Rectangle Fill="#66000000"/>
 
-        <!-- Card -->
-        <Border Width="520"
+        <!-- Carte blanche -->
+        <Border Width="460"
                 Background="White"
-                CornerRadius="16"
-                Padding="22"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
+                CornerRadius="18"
+                Padding="26"
                 BorderBrush="#22000000"
-                BorderThickness="1">
+                BorderThickness="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.25"/>
+                <DropShadowEffect BlurRadius="22"
+                                  ShadowDepth="0"
+                                  Opacity="0.28"/>
             </Border.Effect>
 
             <StackPanel>
-                <TextBlock Text="Connexion" FontSize="26" FontWeight="Bold" Margin="0,0,0,12"/>
 
-                <TextBlock Text="Pseudo" Margin="0,8,0,4"/>
-                <TextBox x:Name="TxtPseudo" Height="34"/>
+                <!-- Titre -->
+                <TextBlock Text="Connexion"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Margin="0,0,0,20"
+                           Foreground="#111"/>
 
-                <TextBlock Text="Mot de passe" Margin="0,12,0,4"/>
-                <PasswordBox x:Name="TxtPassword" Height="34"/>
+                <!-- Champ pseudo -->
+                <TextBlock Text="Pseudo" Margin="0,0,0,6"/>
+                <TextBox x:Name="TxtPseudo" Height="36"/>
 
-                <TextBlock x:Name="LblError" Foreground="#C1272D" Margin="0,10,0,0"/>
+                <!-- Champ mot de passe -->
+                <TextBlock Text="Mot de passe" Margin="0,14,0,6"/>
+                <PasswordBox x:Name="TxtPassword" Height="36"/>
 
+                <!-- Message d'erreur -->
+                <TextBlock x:Name="LblError"
+                           Foreground="{StaticResource RougeErreur}"
+                           Margin="0,10,0,0"
+                           TextWrapping="Wrap"/>
+
+                <!-- Bouton connexion -->
                 <Button Content="Se connecter"
-                        Height="42" Margin="0,12,0,0"
-                        Background="#16A34A" Foreground="White"
+                        Style="{StaticResource BoutonPrincipal}"
                         Click="BtnLogin_Click"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <TextBlock Text="Pas de compte ? " VerticalAlignment="Center"/>
+                <!-- Lien inscription -->
+                <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                    <TextBlock Text="Pas encore de compte ?" VerticalAlignment="Center"/>
                     <Button Content="Créer un compte"
-                            Padding="10,4"
-                            Background="#F3F4F6" Foreground="#111"
+                            Style="{StaticResource BoutonSecondaire}"
+                            Margin="8,0,0,0"
                             Click="GoInscription_Click"/>
                 </StackPanel>
+
             </StackPanel>
         </Border>
     </Grid>

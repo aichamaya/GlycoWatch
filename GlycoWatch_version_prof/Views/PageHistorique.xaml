@@ -5,64 +5,158 @@
       FontFamily="Segoe UI"
       FontSize="14">
 
-    <Grid Margin="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Page.Resources>
+        <!-- Couleurs -->
+        <SolidColorBrush x:Key="FondPage" Color="#F5F7FF"/>
+        <SolidColorBrush x:Key="BleuPrimaire" Color="#2D7FF9"/>
+        <SolidColorBrush x:Key="GrisClair" Color="#EEEEEE"/>
 
-        <!-- Barre d’actions -->
-        <StackPanel Orientation="Horizontal">
-            <Button Content="← Retour" Click="Retour_Click" Margin="0,0,8,0"/>
-            <TextBlock Text="Historique des mesures"
-                 FontSize="22" FontWeight="Bold"
-                 VerticalAlignment="Center"/>
-        </StackPanel>
+        <!-- Bouton principal -->
+        <Style x:Key="BoutonPrincipal" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource BleuPrimaire}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="34"/>
+        </Style>
 
-        <!-- Filtres -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,8">
-            <TextBlock Text="Depuis" VerticalAlignment="Center"/>
-            <DatePicker x:Name="FiltreDepuis" Width="150" Margin="6,0,12,0"/>
+        <!-- Boutons secondaires -->
+        <Style x:Key="BoutonSecondaire" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource GrisClair}"/>
+            <Setter Property="Foreground" Value="#111"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+        </Style>
+    </Page.Resources>
 
-            <TextBlock Text="Jusqu’à" VerticalAlignment="Center"/>
-            <DatePicker x:Name="FiltreJusqua" Width="150" Margin="6,0,12,0"/>
+    <Grid Background="{StaticResource FondPage}">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <TextBlock Text="Repas" VerticalAlignment="Center"/>
-            <TextBox x:Name="FiltreRepas" Width="140" Margin="6,0,12,0"/>
+            <!-- Titre + retour -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,16">
+                <Button Content="← Retour"
+                        Click="Retour_Click"
+                        Style="{StaticResource BoutonSecondaire}"
+                        Margin="0,0,12,0"/>
 
-            <TextBlock Text="Activité" VerticalAlignment="Center"/>
-            <TextBox x:Name="FiltreActivite" Width="140" Margin="6,0,12,0"/>
+                <TextBlock Text="Historique des mesures"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+            </DockPanel>
 
-            <Button Content="Filtrer" Click="Filtrer_Click" Margin="0,0,8,0"/>
-            <Button Content="Réinitialiser" Click="Reinitialiser_Click"/>
-        </StackPanel>
+            <!-- Carte des filtres -->
+            <Border Grid.Row="1"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="16"
+                    Margin="0,0,0,16"
+                    BorderBrush="#22000000"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
-        <!-- Tableau + exports -->
-        <DockPanel Grid.Row="2">
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
-                <Button Content="Exporter CSV" Click="ExporterCsv_Click" Margin="0,0,8,0"/>
-                <Button Content="Exporter JSON" Click="ExporterJson_Click"/>
-            </StackPanel>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Depuis"/>
+                        <DatePicker x:Name="FiltreDepuis" Width="150"/>
+                    </StackPanel>
 
-            <DataGrid x:Name="Grille" AutoGenerateColumns="False" CanUserAddRows="False">
-                <DataGrid.Columns>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Jusqu’à"/>
+                        <DatePicker x:Name="FiltreJusqua" Width="150"/>
+                    </StackPanel>
 
-                    <!-- ✅ Colonne “Quand” en Template pour formater la date sans StringFormat sur DataGridTextColumn -->
-                    <DataGridTemplateColumn Header="Quand" Width="2*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding DateMesure, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Repas contient"/>
+                        <TextBox x:Name="FiltreRepas" Width="150"/>
+                    </StackPanel>
 
-                    <DataGridTextColumn Header="Gly"     Width="*" Binding="{Binding Glycemie}"/>
-                    <DataGridTextColumn Header="Repas"   Width="*" Binding="{Binding ContexteRepas}"/>
-                    <DataGridTextColumn Header="Activité" Width="*" Binding="{Binding Activite}"/>
+                    <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="Activité contient"/>
+                        <TextBox x:Name="FiltreActivite" Width="150"/>
+                    </StackPanel>
 
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Bottom"
+                                Margin="12,0,0,0">
+                        <Button Content="Filtrer"
+                                Click="Filtrer_Click"
+                                Style="{StaticResource BoutonSecondaire}"/>
+                        <Button Content="Réinitialiser"
+                                Click="Reinitialiser_Click"
+                                Style="{StaticResource BoutonSecondaire}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Tableau + export -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="16"
+                    BorderBrush="#22000000"
+                    BorderThickness="1">
+
+                <DockPanel>
+
+                    <!-- Boutons export -->
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,12">
+                        <Button Content="Exporter CSV"
+                                Style="{StaticResource BoutonSecondaire}"
+                                Click="ExporterCsv_Click"/>
+                        <Button Content="Exporter JSON"
+                                Style="{StaticResource BoutonSecondaire}"
+                                Click="ExporterJson_Click"/>
+                    </StackPanel>
+
+                    <!-- Tableau -->
+                    <DataGrid x:Name="Grille"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              IsReadOnly="True">
+
+                        <DataGrid.Columns>
+
+                            <!-- Date -->
+                            <DataGridTemplateColumn Header="Quand" Width="160">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DateMesure, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Glycémie -->
+                            <DataGridTextColumn Header="Gly"
+                                                Width="80"
+                                                Binding="{Binding Glycemie}"/>
+
+                            <!-- Repas -->
+                            <DataGridTextColumn Header="Repas"
+                                                Width="*"
+                                                Binding="{Binding ContexteRepas}"/>
+
+                            <!-- Activité -->
+                            <DataGridTextColumn Header="Activité"
+                                                Width="*"
+                                                Binding="{Binding Activite}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Page>

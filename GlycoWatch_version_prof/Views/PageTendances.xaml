@@ -6,28 +6,36 @@
 
     <Grid Background="#FFF5F5F5" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <!-- En-tête -->
             <RowDefinition Height="Auto"/>
             <!-- Stats -->
-            <RowDefinition Height="*"/>
-            <!-- Courbe -->
             <RowDefinition Height="Auto"/>
+            <!-- Courbe -->
+            <RowDefinition Height="*"/>
             <!-- Conseils -->
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- En-tête : retour + titre + période -->
-        <DockPanel Grid.Row="0" Margin="0,0,0,10">
+        <DockPanel Grid.Row="0" Margin="0,0,0,10" LastChildFill="True">
             <Button Content="← Retour"
-                    Width="90"
+                    Width="100"
                     Margin="0,0,10,0"
+                    Padding="6,3"
                     Click="Retour_Click"
-                    DockPanel.Dock="Left"/>
+                    DockPanel.Dock="Left"
+                    Background="White"
+                    BorderBrush="#2D7FF9"
+                    BorderThickness="1"
+                    Foreground="#2D7FF9"
+                    FontWeight="SemiBold"
+                    Cursor="Hand"/>
 
             <TextBlock Text="Tendances glycémiques"
                        FontSize="22"
                        FontWeight="Bold"
-                       VerticalAlignment="Center"/>
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"/>
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
@@ -40,14 +48,20 @@
                 <ComboBox x:Name="CmbPeriode"
                           Width="150"
                           SelectedIndex="0"
-                          SelectionChanged="Periode_Changee">
+                          SelectionChanged="Periode_Changee"
+                          Margin="0,0,5,0">
                     <ComboBoxItem Content="7 derniers jours" />
                     <ComboBoxItem Content="30 derniers jours" />
                 </ComboBox>
 
                 <Button Content="Actualiser"
-                        Margin="10,0,0,0"
-                        Click="Actualiser_Click"/>
+                        Padding="6,3"
+                        Click="Actualiser_Click"
+                        Background="#2D7FF9"
+                        Foreground="White"
+                        BorderThickness="0"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"/>
             </StackPanel>
         </DockPanel>
 
