@@ -55,7 +55,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ======== BARRE DE NAVIGATION ======== -->
         <Border Grid.Row="0"
                 Background="{StaticResource HeaderGradient}"
                 Padding="10,6">
@@ -97,6 +96,10 @@
                     <Button Content="Déconnexion"
                             Click="BtnLogout_Click"
                             Style="{StaticResource BtnGhost}"/>
+                    <Button Content="Tutoriel"
+                        Click="BtnTutoriel_Click"
+                         Style="{StaticResource BtnGhost}"/>
+
 
                 </StackPanel>
 

@@ -18,6 +18,13 @@
 		<None Remove="Images\bg_diabete.jpg" />
 		<None Remove="Images\diabete-type2.jpg" />
 		<None Remove="Images\iamge-1.jpg" />
+		<None Remove="Videos\tutoriel_glycowatch.mp4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Videos\tutoriel_glycowatch.mp4">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

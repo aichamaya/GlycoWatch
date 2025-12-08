@@ -34,7 +34,7 @@ namespace GlycoWatch_version_prof.Views
             // Texte de bienvenue
             if (App.CurrentUser != null)
             {
-                LblBienvenueAccueil.Text = $"— Bonjour, {App.CurrentUser.Nom}";
+                LblBienvenueAccueil.Text = $"— Bonjour et Bienvenu, {App.CurrentUser.Nom}";
             }
             else
             {
@@ -90,16 +90,13 @@ namespace GlycoWatch_version_prof.Views
             }
             catch (Exception)
             {
-                // En cas d'erreur (par exemple dépôt non disponible), on évite de crasher
+
                 LblNbMesures.Text = "-";
                 LblMoyenne7.Text = "-";
                 LblPctZone7.Text = "-";
             }
         }
 
-        // =========================
-        //   Raccourcis de navigation
-        // =========================
 
         /// <summary>
         /// Bouton "Aller aux mesures".

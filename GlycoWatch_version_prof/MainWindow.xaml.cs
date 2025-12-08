@@ -54,10 +54,12 @@ namespace GlycoWatch_version_prof
         /// <summary>
         /// Affiche la page de profil.
         /// </summary>
+
         public void AllerProfil()
         {
-            FramePrincipal.Navigate(new PageProfil());
+            FramePrincipal.Navigate(new ProfilePage());
         }
+
 
         /// <summary>
         /// Affiche la page de gestion des mesures.
@@ -154,5 +156,15 @@ namespace GlycoWatch_version_prof
             App.CurrentUser = null;
             AllerConnexion();
         }
+        public void AllerTutoriel()
+        {
+            FramePrincipal.Navigate(new PageTutoriel());
+        }
+
+        private void BtnTutoriel_Click(object sender, RoutedEventArgs e)
+        {
+            AllerTutoriel();
+        }
+
     }
 }

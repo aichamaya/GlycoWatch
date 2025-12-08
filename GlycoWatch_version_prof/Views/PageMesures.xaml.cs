@@ -3,29 +3,20 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using GlycoWatch_version_prof.Models;
 
 namespace GlycoWatch_version_prof.Views
 {
     /// <summary>
     /// Page de gestion des mesures de glycémie.
-    /// Permet :
-    /// - d'ajouter une nouvelle mesure;
-    /// - de modifier une mesure existante;
-    /// - de supprimer une mesure;
-    /// - de filtrer les mesures affichées.
+    /// Ajout, modification, suppression et filtres pour l'utilisateur connecté.
     /// </summary>
     public partial class PageMesures : Page
     {
-        /// <summary>
-        /// Identifiant de la mesure en cours d'édition.
-        /// Null si on est en mode "ajout".
-        /// </summary>
+        /// <summary>Identifiant de la mesure en cours d'édition (null = ajout).</summary>
         private int? _editionId = null;
 
-        /// <summary>
-        /// Constructeur. Initialise la page et abonne l'événement de chargement.
-        /// </summary>
         public PageMesures()
         {
             InitializeComponent();
@@ -33,279 +24,236 @@ namespace GlycoWatch_version_prof.Views
         }
 
         /// <summary>
-        /// Événement appelé lorsque la page est chargée.
-        /// Initialise les champs par défaut et remplit le tableau.
+        /// Affiche un message dans la barre de statut.
+        /// estErreur = true pour un message en rouge, false pour un message en vert.
         /// </summary>
-        private void Page_Chargee(object? sender, RoutedEventArgs e)
+        private void AfficherStatut(string message, bool estErreur = false)
         {
-            if (ChampDate.SelectedDate == null)
-            {
-                ChampDate.SelectedDate = DateTime.Today;
-            }
+            if (LblEtatMesures == null) return;
+
+            LblEtatMesures.Text = message;
+            LblEtatMesures.Foreground = estErreur ? Brushes.DarkRed : Brushes.DarkGreen;
+        }
+
+        /// <summary>
+        /// Appelé au chargement de la page.
+        /// Initialise les champs par défaut et charge les mesures.
+        /// </summary>
+        private void Page_Chargee(object sender, RoutedEventArgs e)
+        {
+            ChampDate.SelectedDate ??= DateTime.Today;
 
             if (string.IsNullOrWhiteSpace(ChampHeure.Text))
-            {
                 ChampHeure.Text = "12:00";
-            }
 
-            RafraichirTableau();
+            RafraichirGrille();
         }
 
         /// <summary>
-        /// Recharge les mesures de l'utilisateur connecté dans le tableau,
-        /// sans filtre particulier.
+        /// Recharge la grille avec toutes les mesures de l'utilisateur courant.
         /// </summary>
-        private void RafraichirTableau()
+        /// <summary>
+        /// Recharge la grille avec toutes les mesures de l'utilisateur courant.
+        /// </summary>
+        private void RafraichirGrille()
         {
-            var utilisateur = App.CurrentUser;
-            if (utilisateur == null)
+            var u = App.CurrentUser;
+            if (u == null) return;
+
+            try
             {
-                MessageBox.Show("Aucun utilisateur connecté. Veuillez vous connecter d'abord.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
-                return;
+                Grille.ItemsSource = App.Measures
+                                         .GetByUser(u.Id)
+                                         .OrderBy(m => m.DateMesure)
+                                         .ToList();
+
             }
-
-            var mesures = App.Measures
-                             .GetByUser(utilisateur.Id)
-                             .OrderBy(m => m.DateMesure)
-                             .ToList();
-
-            Grille.ItemsSource = mesures;
+            catch
+            {
+                AfficherStatut("Erreur lors de l'accès aux mesures. Réessayez plus tard.", true);
+            }
         }
 
+
         /// <summary>
-        /// Ajoute une nouvelle mesure ou enregistre la modification d'une mesure existante.
+        /// Ajoute une nouvelle mesure ou enregistre la mesure en cours d'édition.
+        /// </summary>
+        /// <summary>
+        /// Ajoute une nouvelle mesure ou enregistre la mesure en cours d'édition.
         /// </summary>
         private void AjouterOuEnregistrer_Click(object sender, RoutedEventArgs e)
         {
-            var utilisateur = App.CurrentUser;
-            if (utilisateur == null)
+            var u = App.CurrentUser;
+            if (u == null) return;
+
+            AfficherStatut("");
+
+
+            if (!double.TryParse(ChampGlycemie.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out double gly) || gly <= 0)
             {
-                MessageBox.Show("Aucun utilisateur connecté. Veuillez vous connecter d'abord.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                AfficherStatut("La glycémie doit être un nombre positif.", true);
                 return;
             }
 
-            
-            string texteGlycemie = (ChampGlycemie.Text ?? string.Empty).Replace(',', '.');
 
-            if (!double.TryParse(texteGlycemie, NumberStyles.Float, CultureInfo.InvariantCulture, out double valeurGlycemie)
-                || valeurGlycemie <= 0)
-            {
-                MessageBox.Show("La valeur de la glycémie doit être un nombre positif.",
-                                "Erreur",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-                return;
-            }
-
-            // Date de la mesure
             DateTime date = ChampDate.SelectedDate ?? DateTime.Today;
+            TimeSpan heure = TimeSpan.TryParse(ChampHeure.Text, out var h) ? h : new TimeSpan(12, 0, 0);
+            DateTime quand = date.Date + heure;
 
-            // Heure de la mesure
-            TimeSpan heure;
-            if (!TimeSpan.TryParse(ChampHeure.Text, out heure))
-            {
-                MessageBox.Show("L'heure saisie est invalide. Utilisez le format HH:MM, par exemple 08:30.",
-                                "Erreur",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Warning);
-                return;
-            }
 
-            DateTime momentMesure = date.Date + heure;
-
-            // Contexte : repas et activité (facultatifs)
-            string? repas = string.IsNullOrWhiteSpace(ChampRepas.Text) ? null : ChampRepas.Text.Trim();
-            string? activite = string.IsNullOrWhiteSpace(ChampActivite.Text) ? null : ChampActivite.Text.Trim();
+            string repas = string.IsNullOrWhiteSpace(ChampRepas.Text) ? null : ChampRepas.Text.Trim();
+            string activite = string.IsNullOrWhiteSpace(ChampActivite.Text) ? null : ChampActivite.Text.Trim();
 
             try
             {
                 if (_editionId == null)
                 {
-                    // Ajout d'une nouvelle mesure
-                    var nouvelleMesure = new MeasureDb
+
+                    App.Measures.Add(new MeasureDb
                     {
-                        UserId = utilisateur.Id,
-                        DateMesure = momentMesure,
-                        Glycemie = valeurGlycemie,
+                        UserId = u.Id,
+                        DateMesure = quand,
+                        Glycemie = gly,
                         ContexteRepas = repas,
                         Activite = activite
-                    };
+                    });
 
-                    App.Measures.Add(nouvelleMesure);
-                    MessageBox.Show("Mesure ajoutée avec succès.",
-                                    "Information",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
+                    RafraichirGrille();
+                    AfficherStatut("Mesure enregistrée.");
                 }
                 else
                 {
-                    // Mise à jour d'une mesure existante
-                    var mesureModifiee = new MeasureDb
+
+                    App.Measures.Update(new MeasureDb
                     {
                         Id = _editionId.Value,
-                        UserId = utilisateur.Id,
-                        DateMesure = momentMesure,
-                        Glycemie = valeurGlycemie,
+                        UserId = u.Id,
+                        DateMesure = quand,
+                        Glycemie = gly,
                         ContexteRepas = repas,
                         Activite = activite
-                    };
+                    });
 
-                    App.Measures.Update(mesureModifiee);
                     _editionId = null;
 
-                    MessageBox.Show("Mesure mise à jour avec succès.",
-                                    "Information",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
+                    RafraichirGrille();
+                    AfficherStatut("Mesure mise à jour.");
                 }
 
-                // Réinitialisation des champs de saisie
+
                 ChampGlycemie.Clear();
                 ChampRepas.Clear();
                 ChampActivite.Clear();
-                ChampHeure.Text = "12:00";
-                ChampDate.SelectedDate = DateTime.Today;
-
-                RafraichirTableau();
             }
-            catch (Exception)
+            catch
             {
-                MessageBox.Show("Une erreur est survenue lors de l'enregistrement de la mesure. Veuillez réessayer.",
-                                "Erreur",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                AfficherStatut("Erreur lors de l'enregistrement dans la base de données.", true);
             }
         }
 
+
         /// <summary>
-        /// Charge la mesure sélectionnée dans les champs pour la modifier.
+        /// Passe en mode édition à partir de la ligne sélectionnée.
         /// </summary>
         private void ModifierSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (Grille.SelectedItem is MeasureDb mesureSelectionnee)
+            AfficherStatut("");
+
+            if (Grille.SelectedItem is MeasureDb m)
             {
-                _editionId = mesureSelectionnee.Id;
+                _editionId = m.Id;
 
-                ChampGlycemie.Text = mesureSelectionnee.Glycemie.ToString(CultureInfo.InvariantCulture);
-                ChampDate.SelectedDate = mesureSelectionnee.DateMesure.Date;
-                ChampHeure.Text = mesureSelectionnee.DateMesure.ToString("HH:mm");
-                ChampRepas.Text = mesureSelectionnee.ContexteRepas ?? string.Empty;
-                ChampActivite.Text = mesureSelectionnee.Activite ?? string.Empty;
+                ChampGlycemie.Text = m.Glycemie.ToString(CultureInfo.InvariantCulture);
+                ChampDate.SelectedDate = m.DateMesure.Date;
+                ChampHeure.Text = m.DateMesure.ToString("HH:mm");
+                ChampRepas.Text = m.ContexteRepas ?? "";
+                ChampActivite.Text = m.Activite ?? "";
 
-                MessageBox.Show("Mode édition : modifiez les champs puis cliquez sur « Ajouter / Enregistrer ».",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                AfficherStatut("Modification en cours : validez avec « Ajouter / Enregistrer ».");
             }
             else
             {
-                MessageBox.Show("Sélectionnez d’abord une ligne dans le tableau.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                AfficherStatut("Sélectionnez une ligne d'abord.", true);
             }
         }
 
         /// <summary>
-        /// Supprime la mesure sélectionnée après confirmation.
+        /// Supprime la mesure sélectionnée.
         /// </summary>
         private void SupprimerSelection_Click(object sender, RoutedEventArgs e)
         {
-            var utilisateur = App.CurrentUser;
-            if (utilisateur == null)
+            var u = App.CurrentUser;
+            if (u == null) return;
+
+            AfficherStatut("");
+
+            if (Grille.SelectedItem is not MeasureDb m)
             {
-                MessageBox.Show("Aucun utilisateur connecté. Veuillez vous connecter d'abord.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                AfficherStatut("Sélectionnez une ligne d'abord.", true);
                 return;
             }
 
-            if (Grille.SelectedItem is MeasureDb mesureSelectionnee)
+
+
+            if (MessageBox.Show("Supprimer cette mesure ?",
+                                "Confirmation",
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question) != MessageBoxResult.Yes)
             {
-                var reponse = MessageBox.Show("Voulez-vous vraiment supprimer cette mesure ?",
-                                              "Confirmation",
-                                              MessageBoxButton.YesNo,
-                                              MessageBoxImage.Question);
-
-                if (reponse == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        App.Measures.Delete(mesureSelectionnee.Id, utilisateur.Id);
-
-                        if (_editionId == mesureSelectionnee.Id)
-                        {
-                            _editionId = null;
-                        }
-
-                        RafraichirTableau();
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("Une erreur est survenue lors de la suppression de la mesure.",
-                                        "Erreur",
-                                        MessageBoxButton.OK,
-                                        MessageBoxImage.Error);
-                    }
-                }
+                AfficherStatut("Suppression annulée.");
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("Sélectionnez d’abord une ligne dans le tableau.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
+                App.Measures.Delete(m.Id, u.Id);
+
+                if (_editionId == m.Id)
+                    _editionId = null;
+
+                RafraichirGrille();
+                AfficherStatut("Mesure supprimée.");
+            }
+            catch
+            {
+                AfficherStatut("Erreur lors de la suppression dans la base de données.", true);
             }
         }
 
+
         /// <summary>
-        /// Applique les filtres choisis (dates, repas, activité) sur les mesures affichées.
+        /// Applique les filtres (dates, repas, activité) sur les mesures.
         /// </summary>
         private void Filtrer_Click(object sender, RoutedEventArgs e)
         {
-            var utilisateur = App.CurrentUser;
-            if (utilisateur == null)
-            {
-                MessageBox.Show("Aucun utilisateur connecté. Veuillez vous connecter d'abord.",
-                                "Information",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
-                return;
-            }
+            var u = App.CurrentUser;
+            if (u == null) return;
+
+            AfficherStatut("");
 
             DateTime? depuis = FiltreDepuis.SelectedDate;
             DateTime? jusqua = FiltreJusqua.SelectedDate?.AddDays(1).AddSeconds(-1);
 
-            string? repasFiltre = string.IsNullOrWhiteSpace(FiltreRepas.Text) ? null : FiltreRepas.Text.Trim();
-            string? activiteFiltre = string.IsNullOrWhiteSpace(FiltreActivite.Text) ? null : FiltreActivite.Text.Trim();
+            string repas = string.IsNullOrWhiteSpace(FiltreRepas.Text) ? null : FiltreRepas.Text.Trim();
+            string activite = string.IsNullOrWhiteSpace(FiltreActivite.Text) ? null : FiltreActivite.Text.Trim();
 
             try
             {
-                var mesuresFiltrees = App.Measures
-                                         .Filter(utilisateur.Id, depuis, jusqua, repasFiltre, activiteFiltre)
+                Grille.ItemsSource = App.Measures
+                                         .Filter(u.Id, depuis, jusqua, repas, activite)
                                          .OrderBy(m => m.DateMesure)
                                          .ToList();
 
-                Grille.ItemsSource = mesuresFiltrees;
+                AfficherStatut("Filtres appliqués.");
             }
-            catch (Exception)
+            catch
             {
-                MessageBox.Show("Une erreur est survenue lors de l'application des filtres.",
-                                "Erreur",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                AfficherStatut("Erreur lors de l'accès aux mesures filtrées.", true);
             }
         }
 
         /// <summary>
-        /// Réinitialise tous les filtres et recharge toutes les mesures.
+        /// Réinitialise les filtres et recharge toutes les mesures.
         /// </summary>
         private void ReinitialiserFiltres_Click(object sender, RoutedEventArgs e)
         {
@@ -314,19 +262,17 @@ namespace GlycoWatch_version_prof.Views
             FiltreRepas.Clear();
             FiltreActivite.Clear();
 
-            RafraichirTableau();
+            RafraichirGrille();
+            AfficherStatut("Filtres réinitialisés.");
         }
 
         /// <summary>
-        /// Retourne à la page d'accueil.
+        /// Retour à la page d'accueil.
         /// </summary>
         private void Retour_Click(object sender, RoutedEventArgs e)
         {
-            if (Window.GetWindow(this) is MainWindow fenetrePrincipale)
-            {
-               
-                fenetrePrincipale.GoHome();
-            }
+            if (Window.GetWindow(this) is MainWindow shell)
+                shell.GoHome();
         }
     }
 }
