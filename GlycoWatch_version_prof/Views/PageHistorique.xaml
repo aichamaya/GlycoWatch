@@ -91,10 +91,10 @@
                                 Margin="12,0,0,0">
                         <Button Content="Filtrer"
                                 Click="Filtrer_Click"
-                                Style="{StaticResource BoutonSecondaire}"/>
+                                />
                         <Button Content="Réinitialiser"
                                 Click="Reinitialiser_Click"
-                                Style="{StaticResource BoutonSecondaire}"/>
+                                />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -114,10 +114,8 @@
                                 Orientation="Horizontal"
                                 Margin="0,0,0,12">
                         <Button Content="Exporter CSV"
-                                Style="{StaticResource BoutonSecondaire}"
                                 Click="ExporterCsv_Click"/>
                         <Button Content="Exporter JSON"
-                                Style="{StaticResource BoutonSecondaire}"
                                 Click="ExporterJson_Click"/>
                     </StackPanel>
 

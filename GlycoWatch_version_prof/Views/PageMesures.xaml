@@ -103,16 +103,16 @@
                                     VerticalAlignment="Top">
                             <Button Content="Ajouter / Enregistrer"
                                     Click="AjouterOuEnregistrer_Click"
-                                    Style="{StaticResource BoutonPrincipal}"/>
+                                    />
 
                             <Button Content="Modifier la sélection"
                                     Click="ModifierSelection_Click"
-                                    Style="{StaticResource BoutonSecondaire}"
+                                    
                                     Margin="0,8,0,0"/>
 
                             <Button Content="Supprimer la sélection"
                                     Click="SupprimerSelection_Click"
-                                    Style="{StaticResource BoutonSecondaire}"
+                                    
                                     Margin="0,8,0,0"/>
                         </StackPanel>
                     </Grid>
@@ -194,10 +194,10 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="Appliquer les filtres"
                                 Click="Filtrer_Click"
-                                Style="{StaticResource BoutonSecondaire}"/>
+                                />
                         <Button Content="Réinitialiser"
                                 Click="ReinitialiserFiltres_Click"
-                                Style="{StaticResource BoutonSecondaire}"/>
+                                />
                     </StackPanel>
                 </StackPanel>
             </Border>

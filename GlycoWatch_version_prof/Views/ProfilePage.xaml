@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Profil">
 
-    <Grid Background="#1F3A93" Margin="10" >
+    <Grid Background="White" Margin="10" >
         <Grid.RowDefinitions>
             <!-- En-tête -->
             <RowDefinition Height="Auto"/>
@@ -162,7 +162,7 @@
                         Width="140"
                         Padding="6,3"
                         Click="Save_Click"
-                        Background="#2D7FF9"
+                        
                         Foreground="White"
                         BorderThickness="0"
                         FontWeight="SemiBold"

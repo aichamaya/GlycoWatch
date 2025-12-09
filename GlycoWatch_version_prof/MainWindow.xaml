@@ -1,6 +1,8 @@
 ﻿<Window x:Class="GlycoWatch_version_prof.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Style="{StaticResource MaterialDesignWindow}"
         Title="GlycoWatch"
         Height="650"
         Width="1100"
@@ -13,8 +15,8 @@
 
         <!-- Gradient haut -->
         <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#2563EB" Offset="0.0"/>
-            <GradientStop Color="#1E40AF" Offset="1.0"/>
+            <GradientStop Color="#DDE8FF"  Offset="0.0"/>
+            <GradientStop Color="#DDE8FF" Offset="1.0"/>
         </LinearGradientBrush>
 
         <!-- Bouton de navigation (fantôme/blanc) -->
@@ -24,7 +26,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Padding" Value="20,6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Margin" Value="4,0,0,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -64,41 +66,45 @@
                 <TextBlock Text="GlycoWatch"
                            FontSize="24"
                            FontWeight="Bold"
-                           Foreground="White"
+                           Foreground="Black"
                            Margin="0,0,24,0"
                            VerticalAlignment="Center"
                            DockPanel.Dock="Left"/>
 
                 <!-- Boutons -->
-                <StackPanel Orientation="Horizontal"
-                            DockPanel.Dock="Left">
+                <StackPanel Orientation="Horizontal" 
+                            DockPanel.Dock="Left"  >
 
                     <Button Content="Accueil"
-                            Click="BtnAccueil_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                            Click="BtnAccueil_Click" 
+                            Margin="4"
+                            />
 
                     <Button Content="Profil"
                             Click="BtnProfil_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                             Margin="4"
+                            />
 
                     <Button Content="Mesures"
-                            Click="BtnMesures_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                            Click="BtnMesures_Click" Margin="4"/>
 
                     <Button Content="Tendances"
-                            Click="BtnTendances_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                            Click="BtnTendances_Click" Margin="5"
+                            />
 
                     <Button Content="Historique"
                             Click="BtnHistorique_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                            Margin="5"
+                            />
 
                     <Button Content="Déconnexion"
                             Click="BtnLogout_Click"
-                            Style="{StaticResource BtnGhost}"/>
+                            Margin="5"
+                            />
                     <Button Content="Tutoriel"
                         Click="BtnTutoriel_Click"
-                         Style="{StaticResource BtnGhost}"/>
+                            Margin="5"
+                         />
 
 
                 </StackPanel>

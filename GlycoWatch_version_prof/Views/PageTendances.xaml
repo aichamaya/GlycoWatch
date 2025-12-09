@@ -57,7 +57,7 @@
                 <Button Content="Actualiser"
                         Padding="6,3"
                         Click="Actualiser_Click"
-                        Background="#2D7FF9"
+                        
                         Foreground="White"
                         BorderThickness="0"
                         FontWeight="SemiBold"

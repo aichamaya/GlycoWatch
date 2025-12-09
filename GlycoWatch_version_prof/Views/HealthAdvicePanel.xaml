@@ -1,27 +1,62 @@
 ﻿<UserControl x:Class="GlycoWatch_version_prof.Views.Controls.HealthAdvicePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             MinWidth="360">
-    <!-- Carte contenant un titre + liste de conseils -->
-    <Border Style="{StaticResource StyleCarte}">
-        <StackPanel>
-            <TextBlock Text="Conseils santé" Style="{StaticResource H2}" Margin="0,0,0,8"/>
+             MinWidth="360"
+             Background="Transparent">
+
+    <Border Background="#DDE8FF"
+            CornerRadius="14"
+            Padding="20"
+            BorderBrush="#22000000"
+            BorderThickness="1">
+
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="14"
+                              ShadowDepth="0"
+                              Opacity="0.22"/>
+        </Border.Effect>
+
+        <StackPanel >
+
+
+            <TextBlock Text="Conseils santé"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,12"
+                       Foreground="#111"/>
+
+
             <ItemsControl x:Name="ListTips">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <Ellipse Width="6" Height="6" Fill="{StaticResource BrushPrimary}" Margin="0,6,8,0"/>
-                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,4,0,0">
+
+
+                            <Ellipse Width="8"
+                                     Height="8"
+                                     VerticalAlignment="Top"
+                                     Margin="0,6,8,0"
+                                     Fill="{Binding ElementName=LblContext, Path=Foreground}"/>
+
+                            <TextBlock Text="{Binding}"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Top"
+                                       FontSize="14"
+                                       Foreground="{Binding ElementName=LblContext, Path=Foreground}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- Contexte (période + % dans la cible) -->
+
             <TextBlock x:Name="LblContext"
-                       Margin="0,8,0,0"
-                       Foreground="{StaticResource BrushMuted}"
-                       FontSize="12"/>
+                       Margin="0,12,0,0"
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="#555"/>
+
         </StackPanel>
+
     </Border>
 </UserControl>
